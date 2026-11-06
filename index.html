@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HABAŞ Kurumsal Portal</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; justify-content: space-between; align-items: center; padding: 20px; }
+        
+        .header { text-align: center; margin-top: 20px; }
+        .header h1 { color: #1a73e8; font-size: 24px; font-weight: bold; margin-bottom: 5px; }
+        .header p { color: #666; font-size: 14px; }
+
+        .dashboard-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; max-width: 400px; margin: auto 0; }
+        
+        .card { background: white; border-radius: 16px; padding: 25px 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; border: 1px solid #eef0f2; }
+        .card:active { transform: scale(0.96); }
+        
+        .card-icon { font-size: 38px; margin-bottom: 12px; }
+        .card-title { color: #333; font-size: 15px; font-weight: bold; text-align: center; }
+        
+        .card-map { border-top: 4px solid #1a73e8; }
+        .card-chat { border-top: 4px solid #34a853; }
+        .card-report { border-top: 4px solid #fbbc05; }
+        .card-info { border-top: 4px solid #ea4335; }
+
+        .footer { font-size: 12px; color: #888; text-align: center; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>HABAŞ Operasyon</h1>
+        <p>Fabrika Yönetim ve Bilgi Portalı</p>
+    </div>
+
+    <div class="dashboard-grid">
+        <!-- Fabrika Haritası Butonu -->
+        <a href="harita.html" class="card card-map">
+            <div class="card-icon">🗺️</div>
+            <div class="card-title">Fabrika Haritası</div>
+        </a>
+
+        <!-- Sohbet Butonu -->
+        <a href="sohbet.html" class="card card-chat">
+            <div class="card-icon">💬</div>
+            <div class="card-title">Sohbet / Vardiya</div>
+        </a>
+
+        <!-- Raporlama Butonu -->
+        <a href="rapor.html" class="card card-report">
+            <div class="card-icon">📋</div>
+            <div class="card-title">Raporlama</div>
+        </a>
+
+        <!-- Hakkında / Faydalı Bilgiler Butonu -->
+        <a href="bilgi.html" class="card card-info">
+            <div class="card-icon">ℹ️</div>
+            <div class="card-title">Faydalı Bilgiler</div>
+        </a>
+    </div>
+
+    <div class="footer">
+        HABAŞ Demir Çelik A.Ş. • Güvenli Saha Sistemleri
+    </div>
+
+</body>
+</html>
