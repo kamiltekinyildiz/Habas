@@ -6,12 +6,15 @@
     <title>HABAŞ - Sohbet & Vardiya</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        body { background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; }
+        
         .top-header { background: #1a73e8; color: white; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
         .top-header h2 { font-size: 17px; font-weight: bold; }
         .header-actions { display: flex; gap: 8px; align-items: center; }
         .back-btn, .notif-btn { background: rgba(255,255,255,0.2); color: white; padding: 6px 10px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: bold; border: none; cursor: pointer; }
+
         #chat-container { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background-color: #e5ddd5; }
+        
         .message-card { background: white; padding: 10px 14px; border-radius: 8px; max-width: 85%; box-shadow: 0 1px 2px rgba(0,0,0,0.1); word-break: break-word; align-self: flex-start; }
         .message-card.my-message { background: #dcf8c6; align-self: flex-end; }
         .msg-user { font-size: 12px; font-weight: bold; color: #1a73e8; margin-bottom: 3px; }
@@ -20,10 +23,12 @@
         .msg-img { max-width: 100%; border-radius: 6px; margin-top: 5px; display: block; }
         .msg-time { font-size: 10px; color: #777; margin-top: 4px; float: right; }
         .msg-delete { font-size: 11px; color: #dc3545; background: none; border: none; cursor: pointer; font-weight: bold; margin-right: 10px; display: none; }
-        .chat-input-bar { background: white; padding: 10px; display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
-        .chat-input-bar input[type="text"] { flex-grow: 1; padding: 10px 14px; border: 1px solid #ccc; border-radius: 20px; font-size: 15px; outline: none; }
-        .file-upload-btn, #send-btn { background: #1a73e8; color: white; border: none; border-radius: 50%; width: 38px; height: 38px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
-        .file-upload-btn { background: #e0e0e0; color: #333; }
+
+        .chat-input-bar { background: white; padding: 10px 15px; display: flex; gap: 8px; align-items: center; flex-shrink: 0; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); }
+        .chat-input-bar input[type="text"] { flex-grow: 1; padding: 10px 14px; border: 1px solid #ccc; border-radius: 20px; font-size: 15px; outline: none; background: #fafafa; }
+        
+        .file-upload-btn { background: #e0e0e0; color: #333; border: none; border-radius: 50%; width: 38px; height: 38px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        #send-btn { background: #1a73e8; color: white; border: none; border-radius: 50%; width: 38px; height: 38px; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
     </style>
 </head>
 <body>
@@ -34,10 +39,12 @@
             <a href="index.html" class="back-btn">🏠 Ana Menü</a>
         </div>
     </div>
+
     <div id="chat-container"></div>
+
     <div class="chat-input-bar">
         <input type="file" id="file-input" accept="image/*" style="display: none;">
-        <button class="file-upload-btn" id="attach-btn">📷</button>
+        <button class="file-upload-btn" id="attach-btn" title="Görsel Yükle">📷</button>
         <input type="text" id="message-input" placeholder="Mesaj yazın..." autocomplete="off">
         <button id="send-btn">➤</button>
     </div>
@@ -59,7 +66,6 @@
         const chatRef = ref(db, 'habas_chat_room');
         const auditRef = ref(db, 'habas_audit_logs');
 
-        // Bildirim İzni İsteme Fonksiyonu (Butona bağlanmıştır)
         window.requestNotification = function() {
             if (!("Notification" in window)) {
                 alert("Bu tarayıcı bildirimleri desteklemiyor.");
@@ -75,7 +81,6 @@
             });
         };
 
-        // Sayfa açıldığında izin verilmişse butonu gizle
         if ("Notification" in window && Notification.permission === "granted") {
             document.getElementById('notif-perm-btn').style.display = 'none';
         }
@@ -95,6 +100,13 @@
             const text = messageInput.value.trim();
             if (text) { sendData(text); messageInput.value = ''; }
         });
+
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('send-btn').click();
+            }
+        });
+
         document.getElementById('attach-btn').addEventListener('click', () => document.getElementById('file-input').click());
         document.getElementById('file-input').addEventListener('change', (e) => {
             const file = e.target.files[0];
@@ -131,7 +143,7 @@
                 messages.forEach(([id, msg]) => {
                     const card = document.createElement('div');
                     card.classList.add('message-card');
-                    if (msg.sicil === myUser.sicil) card.classList.add('my-header-card') || card.classList.add('my-message');
+                    if (msg.sicil === myUser.sicil) card.classList.add('my-message');
 
                     let contentHtml = `<div class="msg-user">${msg.sender}</div>`;
                     contentHtml += `<div class="msg-info">Firma: ${msg.firma || '-'} | Sicil: ${msg.sicil || '-'}</div>`;
@@ -150,10 +162,8 @@
                 
                 chatContainer.scrollTop = chatContainer.scrollHeight;
 
-                // Yeni mesaj geldiğinde bildirim atma kontrolü
                 if (!isFirstLoad && messages.length > lastMessageCount) {
                     const lastMsg = messages[messages.length - 1][1];
-                    // Eğer mesajı gönderen sen değilsen ve bildirim izni verilmişse
                     if (lastMsg.sicil !== myUser.sicil && "Notification" in window && Notification.permission === "granted") {
                         new Notification("HABAŞ Vardiya Panosu: " + lastMsg.sender, {
                             body: lastMsg.text,
