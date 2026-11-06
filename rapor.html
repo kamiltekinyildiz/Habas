@@ -10,49 +10,30 @@
         
         .top-header { background: #fbbc05; color: #333; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .top-header h2 { font-size: 17px; font-weight: bold; }
-        .header-btns { display: flex; gap: 6px; align-items: center; }
-        .action-btn { background: rgba(0,0,0,0.1); color: #333; padding: 5px 10px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold; border: none; cursor: pointer; }
+        .back-btn { background: rgba(0,0,0,0.1); color: #333; padding: 5px 10px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold; border: none; cursor: pointer; }
 
         #report-container { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background-color: #fff; }
         
         .report-card { background: #fffde7; padding: 14px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); border-left: 5px solid #fbbc05; position: relative; }
         .report-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-        .report-user { font-size: 12px; font-weight: bold; color: #1a73e8; }
+        .report-user { font-size: 13px; font-weight: bold; color: #1a73e8; }
+        .report-info { font-size: 10px; color: #777; margin-bottom: 4px; }
         .report-time { font-size: 11px; color: #777; }
         .report-title { font-size: 15px; font-weight: bold; color: #333; margin-bottom: 4px; }
         .report-desc { font-size: 14px; color: #555; word-break: break-word; margin-bottom: 8px; }
-        .report-delete { font-size: 11px; color: #dc3545; background: none; border: none; cursor: pointer; font-weight: bold; float: right; }
+        .report-delete { font-size: 11px; color: #dc3545; background: none; border: none; cursor: pointer; font-weight: bold; float: right; display: none; }
 
         .report-input-bar { background: white; padding: 12px 15px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); flex-shrink: 0; }
         .report-input-bar input, .report-input-bar textarea { width: 100%; padding: 10px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; outline: none; background: #fafafa; }
         .report-input-bar textarea { resize: none; height: 55px; }
         .report-input-bar button { background: #fbbc05; color: #333; border: none; border-radius: 6px; padding: 12px; font-size: 15px; font-weight: bold; cursor: pointer; }
-
-        #name-modal { display: flex; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 100; justify-content: center; align-items: center; }
-        .modal-box { background: white; padding: 25px; border-radius: 12px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        .modal-box h3 { margin-bottom: 10px; color: #333; }
-        .modal-box p { font-size: 13px; color: #666; margin-bottom: 15px; }
-        .modal-box input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; margin-bottom: 15px; text-align: center; outline: none; }
-        .modal-box button { width: 100%; background: #1a73e8; color: white; padding: 12px; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div id="name-modal" style="display: none;">
-        <div class="modal-box">
-            <h3>Kullanıcı Adı</h3>
-            <p>Adınızı veya unvanınızı girin:</p>
-            <input type="text" id="username-input" placeholder="Örn: Kamil (Şoför)" autocomplete="off">
-            <button id="save-name-btn">Kaydet</button>
-        </div>
-    </div>
-
     <div class="top-header">
         <h2>📋 Raporlar & Notlar</h2>
-        <div class="header-btns">
-            <button class="action-btn" id="change-name-btn">👤 Ad Değiş</button>
-            <a href="index.html" class="action-btn">🏠 Ana Menü</a>
-        </div>
+        <a href="index.html" class="back-btn">🏠 Ana Menü</a>
     </div>
 
     <div id="report-container"></div>
@@ -80,39 +61,19 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        let myName = localStorage.getItem('habas_chat_name') || "";
-        const nameModal = document.getElementById('name-modal');
-        const usernameInput = document.getElementById('username-input');
-        const saveNameBtn = document.getElementById('save-name-btn');
-        const changeNameBtn = document.getElementById('change-name-btn');
-
-        if (!myName) nameModal.style.display = 'flex';
-
-        saveNameBtn.addEventListener('click', () => {
-            const name = usernameInput.value.trim();
-            if (name) {
-                myName = name;
-                localStorage.setItem('habas_chat_name', myName);
-                nameModal.style.display = 'none';
-            } else { alert("Lütfen adınızı girin!"); }
-        });
-
-        changeNameBtn.addEventListener('click', () => {
-            usernameInput.value = myName;
-            nameModal.style.display = 'flex';
-        });
+        // Kullanıcı giriş kontrolü
+        const savedData = localStorage.getItem('habas_user_data');
+        if(!savedData) { window.location.href = 'index.html'; }
+        const myUser = JSON.parse(savedData);
 
         const reportContainer = document.getElementById('report-container');
         const titleInput = document.getElementById('report-title-input');
         const descInput = document.getElementById('report-desc-input');
         const submitBtn = document.getElementById('submit-report-btn');
         const reportsRef = ref(db, 'habas_reports_room');
+        const auditRef = ref(db, 'habas_audit_logs'); // Yönetici log kaydı için
 
         submitBtn.addEventListener('click', () => {
-            if (!myName) {
-                nameModal.style.display = 'flex';
-                return;
-            }
             const title = titleInput.value.trim();
             const desc = descInput.value.trim();
 
@@ -122,7 +83,9 @@
             }
 
             push(reportsRef, {
-                sender: myName,
+                sender: myUser.name,
+                sicil: myUser.sicil,
+                firma: myUser.firma,
                 title: title,
                 desc: desc,
                 time: new Date().toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })
@@ -132,9 +95,18 @@
             descInput.value = '';
         });
 
-        window.deleteReport = function(id) {
+        // Silme İşlemi ve Yöneticiye Log Gönderme
+        window.deleteReport = function(id, repTitle, repSender) {
             if (confirm("Bu raporu/notu silmek istiyor musunuz?")) {
-                remove(ref(db, 'habas_reports_room/' + id));
+                push(auditRef, {
+                    actionBy: myUser.name,
+                    actionSicil: myUser.sicil,
+                    deletedMsg: "Rapor: " + repTitle,
+                    originalSender: repSender,
+                    time: new Date().toLocaleString()
+                }).then(() => {
+                    remove(ref(db, 'habas_reports_room/' + id));
+                });
             }
         };
 
@@ -146,15 +118,23 @@
                 reportsList.forEach(([id, rep]) => {
                     const card = document.createElement('div');
                     card.classList.add('report-card');
+                    
+                    let deleteBtnHtml = "";
+                    // SADECE KENDİ RAPORUSA VEYA YÖNETİCİ (253525) SİLEBİLİR
+                    if(rep.sicil === myUser.sicil || myUser.sicil === "253525") {
+                        deleteBtnHtml = `<button class="report-delete" style="display:inline-block;" onclick="window.deleteReport('${id}', '${rep.title}', '${rep.sender}')">🗑️ Sil</button>`;
+                    }
+
                     card.innerHTML = `
                         <div class="report-header">
                             <span class="report-user">👤 ${rep.sender}</span>
                             <span class="report-time">${rep.time || ''}</span>
                         </div>
+                        <div class="report-info">Firma: ${rep.firma || '-'} | Sicil: ${rep.sicil || '-'}</div>
                         <div class="report-title">${rep.title}</div>
                         <div class="report-desc">${rep.desc}</div>
                         <div>
-                            <button class="report-delete" onclick="window.deleteReport('${id}')">🗑️ Sil</button>
+                            ${deleteBtnHtml}
                             <div style="clear:both;"></div>
                         </div>
                     `;
