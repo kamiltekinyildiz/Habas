@@ -10,15 +10,15 @@
         
         .top-header { background: #1a73e8; color: white; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
         .top-header h2 { font-size: 17px; font-weight: bold; }
-        .header-actions { display: flex; gap: 8px; align-items: center; }
-        .back-btn, .notif-btn { background: rgba(255,255,255,0.2); color: white; padding: 6px 10px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: bold; border: none; cursor: pointer; }
+        .back-btn { background: rgba(255,255,255,0.2); color: white; padding: 5px 10px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold; }
 
         #chat-container { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background-color: #e5ddd5; }
         
         .message-card { background: white; padding: 10px 14px; border-radius: 8px; max-width: 85%; box-shadow: 0 1px 2px rgba(0,0,0,0.1); word-break: break-word; align-self: flex-start; }
         .message-card.my-message { background: #dcf8c6; align-self: flex-end; }
-        .msg-user { font-size: 12px; font-weight: bold; color: #1a73e8; margin-bottom: 3px; }
-        .msg-info { font-size: 10px; color: #888; margin-bottom: 4px; }
+        
+        .msg-user { font-size: 13px; font-weight: bold; color: #1a73e8; margin-bottom: 2px; }
+        .msg-info { font-size: 11px; color: #777; margin-bottom: 4px; } /* Sadece Firma yazar, sicil gizlenir */
         .msg-text { font-size: 15px; color: #333; margin-bottom: 5px; }
         .msg-img { max-width: 100%; border-radius: 6px; margin-top: 5px; display: block; }
         .msg-time { font-size: 10px; color: #777; margin-top: 4px; float: right; }
@@ -34,10 +34,7 @@
 <body>
     <div class="top-header">
         <h2>💬 Vardiya Panosu</h2>
-        <div class="header-actions">
-            <button class="notif-btn" id="notif-perm-btn" onclick="requestNotification()">🔔 Bildirim Aç</button>
-            <a href="index.html" class="back-btn">🏠 Ana Menü</a>
-        </div>
+        <a href="index.html" class="back-btn">🏠 Ana Menü</a>
     </div>
 
     <div id="chat-container"></div>
@@ -66,25 +63,6 @@
         const chatRef = ref(db, 'habas_chat_room');
         const auditRef = ref(db, 'habas_audit_logs');
 
-        window.requestNotification = function() {
-            if (!("Notification" in window)) {
-                alert("Bu tarayıcı bildirimleri desteklemiyor.");
-                return;
-            }
-            Notification.requestPermission().then(permission => {
-                if (permission === "granted") {
-                    alert("Bildirimler başarıyla aktif edildi!");
-                    document.getElementById('notif-perm-btn').style.display = 'none';
-                } else {
-                    alert("Bildirim izni reddedildi.");
-                }
-            });
-        };
-
-        if ("Notification" in window && Notification.permission === "granted") {
-            document.getElementById('notif-perm-btn').style.display = 'none';
-        }
-
         function sendData(text, imageBase64 = null) {
             push(chatRef, {
                 sender: myUser.name,
@@ -102,9 +80,7 @@
         });
 
         messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                document.getElementById('send-btn').click();
-            }
+            if (e.key === 'Enter') { document.getElementById('send-btn').click(); }
         });
 
         document.getElementById('attach-btn').addEventListener('click', () => document.getElementById('file-input').click());
@@ -131,9 +107,6 @@
             }
         };
 
-        let isFirstLoad = true;
-        let lastMessageCount = 0;
-
         onValue(chatRef, (snapshot) => {
             chatContainer.innerHTML = '';
             const data = snapshot.val();
@@ -146,7 +119,10 @@
                     if (msg.sicil === myUser.sicil) card.classList.add('my-message');
 
                     let contentHtml = `<div class="msg-user">${msg.sender}</div>`;
-                    contentHtml += `<div class="msg-info">Firma: ${msg.firma || '-'} | Sicil: ${msg.sicil || '-'}</div>`;
+                    
+                    // ÖNEMLİ DEĞİŞİKLİK: Sicil numarası ekrandan tamamen kaldırıldı, sadece Firma adı görünüyor
+                    contentHtml += `<div class="msg-info">Firma: ${msg.firma || '-'}</div>`;
+                    
                     if (msg.text) contentHtml += `<div class="msg-text">${msg.text}</div>`;
                     if (msg.image) contentHtml += `<img src="${msg.image}" class="msg-img">`;
                     
@@ -161,19 +137,7 @@
                 });
                 
                 chatContainer.scrollTop = chatContainer.scrollHeight;
-
-                if (!isFirstLoad && messages.length > lastMessageCount) {
-                    const lastMsg = messages[messages.length - 1][1];
-                    if (lastMsg.sicil !== myUser.sicil && "Notification" in window && Notification.permission === "granted") {
-                        new Notification("HABAŞ Vardiya Panosu: " + lastMsg.sender, {
-                            body: lastMsg.text,
-                            icon: "https://cdn-icons-png.flaticon.com/512/3233/3233483.png"
-                        });
-                    }
-                }
-                lastMessageCount = messages.length;
             }
-            isFirstLoad = false;
         });
     </script>
 </body>
