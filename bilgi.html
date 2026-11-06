@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HABAŞ - Telefon Rehberi</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; }
+        
+        .top-header { background: #ea4335; color: white; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .top-header h2 { font-size: 17px; font-weight: bold; }
+        .back-btn { background: rgba(255,255,255,0.2); color: white; padding: 5px 10px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold; }
+
+        .search-area { padding: 15px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); z-index: 10; flex-shrink: 0; }
+        .search-area input { width: 100%; padding: 12px 15px; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; outline: none; background: #fafafa; }
+        .search-area input:focus { border-color: #ea4335; background: #fff; }
+
+        .results-area { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        
+        .contact-card { background: #fff; border-left: 4px solid #ccc; padding: 12px 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+        .contact-card.priority { border-left-color: #ea4335; background: #fffcfc; }
+        
+        .contact-info h4 { font-size: 15px; color: #333; margin-bottom: 3px; }
+        .contact-info p { font-size: 13px; color: #666; }
+        .contact-info b { color: #1a73e8; font-size: 14px; }
+        
+        .call-btn { background: #34a853; color: white; text-decoration: none; padding: 10px 16px; border-radius: 8px; font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 5px; flex-shrink: 0; transition: transform 0.1s; }
+        .call-btn:active { transform: scale(0.95); }
+        
+        .no-result { text-align: center; color: #888; font-size: 14px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="top-header">
+        <h2>📞 Dahili Telefon Rehberi</h2>
+        <a href="index.html" class="back-btn">🏠 Ana Menü</a>
+    </div>
+
+    <div class="search-area">
+        <input type="text" id="search-contact" placeholder="İsim, birim veya dahili numara ara..." autocomplete="off">
+    </div>
+
+    <div class="results-area" id="contact-list">
+        <!-- Liste buraya JS ile gelecek -->
+    </div>
+
+    <script>
+        // Görsellerden elde edilen HABAŞ Dahili Telefon Rehberi
+        const contacts = [
+            // --- 1. ÖNCELİKLİ BİRİMLER (Revirler, Güvenlik, Teknik Emniyet) ---
+            { name: "Fabrika REVİR (Ana Revir)", unit: "Sağlık Kliniği", phone: "1333", priority: true },
+            { name: "Saç REVİR", unit: "Sağlık Kliniği", phone: "1134", priority: true },
+            { name: "Liman REVİR", unit: "Sağlık Kliniği", phone: "1707", priority: true },
+            { name: "Dr. Berkant Adalı", unit: "İşyeri Hekimi", phone: "1130", priority: true },
+            { name: "Dr. Şakir Karıncaoğlu - Dr. Zahit Porsuk", unit: "İşyeri Hekimi", phone: "1131", priority: true },
+            { name: "Güvenlik Müdürü (Bülent Kurtarıcı)", unit: "Güvenlik", phone: "1660", priority: true },
+            { name: "Fabrika Ön Kapı Güvenlik", unit: "Güvenlik", phone: "1662", priority: true },
+            { name: "Liman Yolu Giriş Güvenlik", unit: "Güvenlik", phone: "1671", priority: true },
+            { name: "Teknik Emniyet Şefi (Selim Köse)", unit: "Teknik Emniyet", phone: "1773", priority: true },
+            { name: "Saç Hadde Teknik Emniyet", unit: "Teknik Emniyet", phone: "1774", priority: true },
+            { name: "Liman Teknik Emniyet", unit: "Teknik Emniyet", phone: "1776", priority: true },
+
+            // --- 2. DİĞER BİRİMLER VE PERSONELLER ---
+            { name: "Santral / Ana Santral", unit: "Santral", phone: "02326251170" },
+            { name: "Santral Memuru", unit: "Santral", phone: "1001" },
+            { name: "Mehmet Boran", unit: "Çelikhane Danışman", phone: "1201" },
+            { name: "Erdem Günay", unit: "Çelikhane Müdürü", phone: "1205" },
+            { name: "Murat Çatal", unit: "Çelikhane Kalite Sistem Müh.", phone: "1206" },
+            { name: "Ahmet Burak Şenkal", unit: "Slab İşletme Mühendisi", phone: "1216" },
+            { name: "İsmail Fidan", unit: "Çelikhane İşletme Şefi", phone: "1232" },
+            { name: "Erhan Kaya", unit: "Sdm. İşletme Müh.", phone: "1240" },
+            { name: "Metin Topçu", unit: "Hurda Hazırlama Müh.", phone: "1248" },
+            { name: "Oğulcan Orhan", unit: "Çelikhane Vardiya İşletme Şefi", phone: "1251" },
+            { name: "Bahadır Kiraz", unit: "Çelikhane Vardiya İşletme Müh.", phone: "1252" },
+            { name: "Adil Çalışkan - Orhan Kısakol - Semih Altıgan", unit: "Çelikhane Slab Müh.", phone: "1264" },
+            { name: "Batuhan Işık", unit: "Slab Mak. Bak.", phone: "1268" },
+            
+            { name: "Haddehaneler Müdürü", unit: "Haddehane", phone: "1301" },
+            { name: "Ahmet Turan", unit: "Hadde 1 İşletme Şefi", phone: "1310" },
+            { name: "Muhammet Girgin", unit: "Hadde 1 İşletme Mühendisi", phone: "1311" },
+            { name: "İbrahim Türk", unit: "Hadde 1 İşletme Mühendisi", phone: "1312" },
+            { name: "Aziz Acar", unit: "Hadde 2 İşletme Mühendisi", phone: "1321" },
+            { name: "Kurtuluş Özbek", unit: "Hadde 2 İşletme Mühendisi", phone: "1322" },
+            { name: "Rafet Civelek", unit: "Hadde 3 İşletme Şefi", phone: "1330" },
+            { name: "Hasan Arslan", unit: "Hadde 3 İşletme Mühendisi", phone: "1331" },
+            { name: "Ramazan Demiryay", unit: "Hadde 3 Yedek Hazırlama", phone: "1341" },
+            { name: "Salih Taşkın", unit: "Haddehane Atölye Şefi", phone: "1345" },
+
+            { name: "Haşim Ayten", unit: "Kalite Planlama Müdürü", phone: "1101" },
+            { name: "Mustafa Akıncı", unit: "Koordinatör", phone: "1104" },
+            { name: "Haluk Özge", unit: "Denetim Memuru", phone: "1108" },
+            { name: "Namık Erol", unit: "İdari İşler Müdürü", phone: "1110" },
+            { name: "Ender Arı", unit: "Sevkiyat Şefi", phone: "1113" },
+            { name: "Özgür Şerefhanoğlu", unit: "Sevkiyat Memuru", phone: "1114" },
+            { name: "Salih Özel", unit: "Personel Şefi", phone: "1160" },
+            { name: "Mustafa Kızılkaya", unit: "Personel Memuru", phone: "1161" },
+            { name: "Özgür Tütüncü", unit: "Personel Memuru", phone: "1162" },
+
+            { name: "Aytekin Ayber", unit: "Mali İşler Müdürü", phone: "1150" },
+            { name: "Aydın Yıldız", unit: "Muhasebe Şefi", phone: "1152" },
+            { name: "Hakan Vardar", unit: "Muhasebe Memuru", phone: "1153" },
+            { name: "Tolga Özcan", unit: "Satınalma Şefi", phone: "1170" },
+            { name: "Kenan Üstündağ", unit: "Satınalma Memuru", phone: "1173" },
+            { name: "Gökhan Kökesmer", unit: "Teknik Ambar Şefi", phone: "1180" },
+            { name: "Keziban Mühürcüoğlu", unit: "Gıda ve Yemekhane Şefi", phone: "1190" },
+            { name: "Oğuzhan Çelik", unit: "Gıda Mühendisi", phone: "1191" },
+
+            { name: "Süleyman Eldem", unit: "Elk. Üret Tesis Müdürü", phone: "1401" },
+            { name: "Hamza Yılmaz", unit: "Elk. Üret. Tes. Md. Yrd.", phone: "1403" },
+            { name: "Mücahit Sezer", unit: "Fabrika Enerji Yöneticisi", phone: "1405" },
+            { name: "Birol Sarpdağ", unit: "Elektrik Bakım Şefliği", phone: "1410" },
+            
+            { name: "Murat Elter", unit: "Gaz Tesisleri Müdürü", phone: "1450" },
+            { name: "Can Tanrıseven", unit: "Gaz Tes. Kalite Güv. Müh.", phone: "1454" },
+            { name: "Serkan Kırkar", unit: "Makina Bakım Mühendisliği", phone: "1480" },
+            { name: "İbrahim Vesek", unit: "Tüp Fabrikası Kalite Kontrol Şefi", phone: "1482" },
+            
+            { name: "Barış Mercimek", unit: "Saç Haddehanesi Müdürü", phone: "1501" },
+            { name: "Özgür Dikinci", unit: "Saç Haddehane İşletme Şefi", phone: "1510" },
+            { name: "Özgür Bilgin", unit: "Hadde Üretim Planlama Şefi", phone: "1521" },
+            { name: "Melih Metin", unit: "PPPL İşletme Mühendisi", phone: "1530" },
+
+            { name: "Aşkın Enes Koçak", unit: "Çinko Tesisi Müdürlüğü", phone: "1601" },
+            { name: "Bülent Öziğci", unit: "Çinko Tesisi Elektrik Bakım Müh.", phone: "1610" },
+            { name: "Fikri Çelik", unit: "İnşaat ve Yatırım Müdürü", phone: "1650" },
+            { name: "Ersan Sezer", unit: "İnşaat Mühendisi", phone: "1653" },
+            { name: "Ulaş Çıra", unit: "Fabrika Garaj Müh.", phone: "1680" },
+            
+            { name: "Deniz Sarıoğlu", unit: "Liman Müdürü", phone: "1710" },
+            { name: "Osman Turan", unit: "Liman İşletme Şefliği (İthalat)", phone: "1711" },
+            { name: "Orhan Şaman", unit: "Fabrika Müdürü (Kalite Kontrol)", phone: "1750" },
+            { name: "Bayram Bostancı", unit: "Ç.K.K.M.", phone: "1752" },
+            { name: "Yusuf Erol", unit: "Hadde Fizik Laboratuvarı", phone: "1762" },
+            
+            { name: "İsmail Akbaba", unit: "Soğuk Hadde Yatırım", phone: "1933" }
+        ];
+
+        const searchInput = document.getElementById('search-contact');
+        const contactList = document.getElementById('contact-list');
+
+        function renderContacts(list) {
+            contactList.innerHTML = '';
+            if(list.length === 0) {
+                contactList.innerHTML = '<div class="no-result">Aradığınız kişi veya birim bulunamadı.</div>';
+                return;
+            }
+            
+            list.forEach(c => {
+                const card = document.createElement('div');
+                card.classList.add('contact-card');
+                if(c.priority) card.classList.add('priority'); // Öncelikli olanların sol çizgisi kırmızı olur
+                
+                card.innerHTML = `
+                    <div class="contact-info">
+                        <h4>${c.name}</h4>
+                        <p>${c.unit}</p>
+                        <p>Dahili: <b>${c.phone}</b></p>
+                    </div>
+                    <a href="tel:${c.phone}" class="call-btn">📞 Ara</a>
+                `;
+                contactList.appendChild(card);
+            });
+        }
+
+        // Sayfa yüklendiğinde tam listeyi göster
+        renderContacts(contacts);
+
+        // Arama kutusu çalıştığında filtrele
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            const filtered = contacts.filter(c => 
+                c.name.toLowerCase().includes(query) || 
+                c.phone.includes(query) || 
+                c.unit.toLowerCase().includes(query)
+            );
+            renderContacts(filtered);
+        });
+    </script>
+</body>
+</html>
