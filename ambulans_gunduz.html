@@ -3,111 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HABAŞ - Günlük Ambulans Bakım Formu (Gündüz)</title>
+    <title>GÜNLÜK AMBULANS BAKIM FORMU (GÜNDÜZ)</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        body { background-color: #525659; display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; }
         
-        .top-header { background: #ea4335; color: white; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .top-header { background: #ea4335; color: white; padding: 10px 15px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
         .top-header h2 { font-size: 15px; font-weight: bold; }
         .back-btn { background: rgba(255,255,255,0.2); color: white; padding: 5px 10px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold; border: none; cursor: pointer; }
 
-        .form-container { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; background: #fafafa; }
+        .form-scroll-area { flex-grow: 1; overflow: auto; padding: 10px; display: flex; justify-content: center; background: #525659; }
         
-        .form-section { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .form-section h3 { font-size: 14px; color: #ea4335; margin-bottom: 10px; border-bottom: 2px solid #f0f2f5; padding-bottom: 5px; }
+        /* Excel Kağıt Görünümü */
+        .excel-sheet { background: white; width: 900px; padding: 20px; box-shadow: 0 0 15px rgba(0,0,0,0.3); font-size: 11px; color: #000; }
         
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; font-size: 13px; }
-        .info-grid label { display: flex; flex-direction: column; font-weight: bold; color: #444; }
-        .info-grid input, .info-grid select { padding: 8px; border: 1px solid #ccc; border-radius: 6px; margin-top: 3px; font-size: 14px; outline: none; }
+        table.excel-table { width: 100%; border-collapse: collapse; border: 1px solid #000; }
+        table.excel-table th, table.excel-table td { border: 1px solid #000; padding: 3px 5px; vertical-align: middle; text-align: left; }
+        
+        .center { text-align: center; }
+        .bold { font-weight: bold; }
+        .bg-red { background: #d9381e; color: white; font-weight: bold; text-align: center; }
+        .bg-gray { background: #f2f2f2; font-weight: bold; }
+        
+        input[type="text"], input[type="date"], input[type="number"], select { width: 100%; border: none; outline: none; background: transparent; font-size: 11px; padding: 2px; font-family: Arial, sans-serif; }
+        select { cursor: pointer; font-weight: bold; }
+        
+        .car-img { width: 70px; height: auto; display: block; margin: 0 auto; }
 
-        .checklist-item { display: flex; flex-direction: column; gap: 5px; padding: 10px 0; border-bottom: 1px solid #f1f3f4; font-size: 13px; }
-        .item-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        .checklist-item select { padding: 6px 10px; border-radius: 6px; border: 1px solid #ccc; font-weight: bold; font-size: 13px; }
-        .checklist-item input[type="text"] { width: 100%; padding: 6px 10px; border: 1px dashed #ccc; border-radius: 6px; font-size: 12px; outline: none; background: #fffdfd; margin-top: 4px; }
-        .checklist-item input[type="text"]:focus { border-color: #ea4335; border-style: solid; }
-        
-        .form-actions { padding: 15px; background: white; display: flex; gap: 10px; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); flex-shrink: 0; }
-        .btn-print { flex: 1; background: #1a73e8; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; }
-        .btn-whatsapp { flex: 1; background: #25D366; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; }
+        .form-actions { padding: 10px 15px; background: #333; display: flex; gap: 10px; flex-shrink: 0; }
+        .btn-print { flex: 1; background: #1a73e8; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; }
+        .btn-whatsapp { flex: 1; background: #25D366; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; }
 
         @media print {
             .top-header, .form-actions { display: none !important; }
             body { background: white; height: auto; overflow: visible; }
-            .form-container { padding: 0; overflow: visible; background: white; }
-            .form-section { box-shadow: none; border: 1px solid #ddd; margin-bottom: 10px; }
-            .checklist-item input[type="text"] { border: 1px solid #999; }
+            .form-scroll-area { padding: 0; background: white; overflow: visible; }
+            .excel-sheet { box-shadow: none; width: 100%; padding: 0; }
         }
     </style>
 </head>
 <body>
 
     <div class="top-header">
-        <h2>GÜNLÜK AMBULANS BAKIM FORMU (GÜNDÜZ)</h2>
+        <h2>HABAŞ - Orijinal Ambulans Formu (Gündüz)</h2>
         <a href="bilgi.html" class="back-btn">⬅ Geri Dön</a>
     </div>
 
-    <div class="form-container">
-        <div class="form-section">
-            <h3>Araç ve Vardiya Bilgileri</h3>
-            <div class="info-grid">
-                <label>Plaka:
-                    <select id="plaka">
-                        <option>06 JRY 93</option>
-                        <option>34 JF 8822</option>
-                    </select>
-                </label>
-                <label>Tarih:
-                    <input type="date" id="tarih">
-                </label>
-                <label>Kilometre:
-                    <input type="number" id="km" placeholder="Km giriniz">
-                </label>
-                <label>Konum:
-                    <select id="konum">
-                        <option>Ana Revir</option>
-                        <option>Sac Revir</option>
-                        <option>Diğer</option>
-                    </select>
-                </label>
-            </div>
-        </div>
+    <div class="form-scroll-area">
+        <div class="excel-sheet">
+            <table class="excel-table">
+                <!-- Başlık -->
+                <tr>
+                    <td colspan="12" class="bg-red" style="font-size: 14px; padding: 6px;">GÜNLÜK AMBULANS BAKIM FORMU (GÜNDÜZ)</td>
+                    <td colspan="4" class="center bold" style="background:#e0e0e0;">İH.FR.0005-05</td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="center bg-gray" style="color:red; font-size:14px; font-weight:bold;">HABAŞ</td>
+                    <td colspan="5" class="bold">Aracın Plakası</td>
+                    <td colspan="4">
+                        <select id="plaka">
+                            <option>06 JRY 93</option>
+                            <option>34 JF 8822</option>
+                        </select>
+                    </td>
+                    <td colspan="2" class="bold">Tarih</td>
+                    <td colspan="2"><input type="date" id="tarih"></td>
+                </tr>
+                <tr>
+                    <td colspan="3" rowspan="2" class="center"><img src="https://i.ibb.co/6R4Z9b3/ambulans-front.png" class="car-img" alt="Ön Görünüş" onerror="this.style.display='none'">[Araç Önden]</td>
+                    <td colspan="5" class="bold">Aracın Kilometresi</td>
+                    <td colspan="4"><input type="number" id="km" placeholder="Km giriniz"></td>
+                    <td colspan="2" class="bold">Saat</td>
+                    <td colspan="2"><input type="text" value="08:00"></td>
+                </tr>
+                <tr>
+                    <td colspan="5" class="bold">Aracın Konumu</td>
+                    <td colspan="8">
+                        <select id="konum">
+                            <option>( X ) Ana Revir &nbsp;&nbsp;&nbsp; ( &nbsp; ) Sac Revir</option>
+                            <option>( &nbsp; ) Ana Revir &nbsp;&nbsp;&nbsp; ( X ) Sac Revir</option>
+                        </select>
+                    </td>
+                </tr>
 
-        <div class="form-section">
-            <h3>1. Genel Araç Kontrolleri</h3>
-            <div class="checklist-item"><div class="item-row"><span>Mali Mesuliyet Sigortası</span><select><option>✔ Uygun</option><option>❌ Eksik</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
-            <div class="checklist-item"><div class="item-row"><span>Aracın Dış Görünüşü (Temizlik)</span><select><option>✔ Uygun</option><option>❌ Kirli</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
-            <div class="checklist-item"><div class="item-row"><span>Araç Ruhsatı</span><select><option>✔ Uygun</option><option>❌ Eksik</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
-            <div class="checklist-item"><div class="item-row"><span>Kaporta Durumu</span><select><option>✔ Uygun</option><option>❌ Hasarlı</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
-            <div class="checklist-item"><div class="item-row"><span>Gösterge Paneli</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
-            <div class="checklist-item"><div class="item-row"><span>Araç Telsizi</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
-            <div class="checklist-item"><div class="item-row"><span>Megafon</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
-            <div class="checklist-item"><div class="item-row"><span>Sirenler ve Tepe Lambaları</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
-            <div class="checklist-item"><div class="item-row"><span>Farlar ve Sinyaller</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
-            <div class="checklist-item"><div class="item-row"><span>Motor Yağı ve Su Seviyesi</span><select><option>✔ Uygun</option><option>❌ Eksik</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
-            <div class="checklist-item"><div class="item-row"><span>Fren ve Direksiyon Sistemi</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
-            <div class="checklist-item"><div class="item-row"><span>Lastikler ve Diş Derinliği</span><select><option>✔ Uygun</option><option>❌ Eksik/Arıza</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
-        </div>
+                <!-- Tablo Başlıkları & İçerikler -->
+                <tr>
+                    <td colspan="8" class="bg-gray center">GENEL ARAÇ KONTROLLERİ</td>
+                    <td colspan="8" class="bg-gray center">AVADANLIK VE DONANIM KONTROLÜ</td>
+                </tr>
+                <tr>
+                    <td colspan="5">Mali Mesuliyet Sigortası</td>
+                    <td colspan="3"><select><option>Var ( ✔ )</option><option>Yok ( ❌ )</option></select></td>
+                    <td colspan="5">220 Volt Şarj Kablosu</td>
+                    <td colspan="3"><select><option>Var ( ✔ )</option><option>Yok ( ❌ )</option></select></td>
+                </tr>
+                <tr>
+                    <td colspan="5">Aracın Dış Görünüşü</td>
+                    <td colspan="3"><select><option>Temiz ( ✔ )</option><option>Kirli ( ❌ )</option></select></td>
+                    <td colspan="5">Alyan Anahtarı</td>
+                    <td colspan="3"><select><option>Var ( ✔ )</option><option>Yok ( ❌ )</option></select></td>
+                </tr>
+                <tr>
+                    <td colspan="5">Araç Ruhsatı</td>
+                    <td colspan="3"><select><option>Var ( ✔ )</option><option>Yok ( ❌ )</option></select></td>
+                    <td colspan="5">Avadanlık Çantası</td>
+                    <td colspan="3"><select><option>Var ( ✔ )</option><option>Yok ( ❌ )</option></select></td>
+                </tr>
+                <tr>
+                    <td colspan="5">Kaporta Durumu</td>
+                    <td colspan="3"><select><option>Sağlam ( ✔ )</option><option>Hasarlı ( ❌ )</option></select></td>
+                    <td colspan="5">Balta / Çekiç</td>
+                    <td colspan="3"><select><option>Var ( ✔ )</option><option>Yok ( ❌ )</option></select></td>
+                </tr>
+                <tr>
+                    <td colspan="5">Gösterge Paneli</td>
+                    <td colspan="3"><select><option>Sağlam ( ✔ )</option><option>Arızalı ( ❌ )</option></select></td>
+                    <td colspan="5">Baret (3 Adet)</td>
+                    <td colspan="3"><select><option>Var ( ✔ )</option><option>Yok ( ❌ )</option></select></td>
+                </tr>
+                <tr>
+                    <td colspan="5">Araç Telsizi / Megafon</td>
+                    <td colspan="3"><select><option>Sağlam ( ✔ )</option><option>Arızalı ( ❌ )</option></select></td>
+                    <td colspan="5">Bijon Anahtarı / Kriko</td>
+                    <td colspan="3"><select><option>Var ( ✔ )</option><option>Yok ( ❌ )</option></select></td>
+                </tr>
+                <tr>
+                    <td colspan="5">Sirenler ve Tepe Lambaları</td>
+                    <td colspan="3"><select><option>Sağlam ( ✔ )</option><option>Arızalı ( ❌ )</option></select></td>
+                    <td colspan="5">Çekme Halatı / Çizme (3 Ad.)</td>
+                    <td colspan="3"><select><option>Var ( ✔ )</option><option>Yok ( ❌ )</option></select></td>
+                </tr>
+                <tr>
+                    <td colspan="5">Farlar, Flaşörler ve Sinyaller</td>
+                    <td colspan="3"><select><option>Sağlam ( ✔ )</option><option>Arızalı ( ❌ )</option></select></td>
+                    <td colspan="5">Düz-Yıldız Tornavida / Pense</td>
+                    <td colspan="3"><select><option>Var ( ✔ )</option><option>Yok ( ❌ )</option></select></td>
+                </tr>
+                <tr>
+                    <td colspan="5">Fren ve Direksiyon Sistemi</td>
+                    <td colspan="3"><select><option>Sağlam ( ✔ )</option><option>Arızalı ( ❌ )</option></select></td>
+                    <td colspan="5">İmdat Çekici / İş Eldiveni</td>
+                    <td colspan="3"><select><option>Var ( ✔ )</option><option>Yok ( ❌ )</option></select></td>
+                </tr>
+                <tr>
+                    <td colspan="5">Lastikler ve Hava Basıncı</td>
+                    <td colspan="3"><select><option>Normal ( ✔ )</option><option>Arıza/Eksik ( ❌ )</option></select></td>
+                    <td colspan="5">Reflektör / Seyyar Lamba</td>
+                    <td colspan="3"><select><option>Var ( ✔ )</option><option>Yok ( ❌ )</option></select></td>
+                </tr>
 
-        <div class="form-section">
-            <h3>2. Aracın Altının ve Motorun Kontrolü</h3>
-            <div class="checklist-item"><div class="item-row"><span>Yağ Damlaması Var mı?</span><select><option>✔ Uygun (Yok)</option><option>❌ Var</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
-            <div class="checklist-item"><div class="item-row"><span>Su Kaçağı Var mı?</span><select><option>✔ Uygun (Yok)</option><option>❌ Var</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
-            <div class="checklist-item"><div class="item-row"><span>Hidrolik Kaçağı Var mı?</span><select><option>✔ Uygun (Yok)</option><option>❌ Var</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
-            <div class="checklist-item"><div class="item-row"><span>Yakıt Kaçağı Var mı?</span><select><option>✔ Uygun (Yok)</option><option>❌ Var</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
-            <div class="checklist-item"><div class="item-row"><span>Motor Kaputu Açma Sistemi</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
-            <div class="checklist-item"><div class="item-row"><span>Akümülatör Durumu</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
-            <div class="checklist-item"><div class="item-row"><span>Stepne</span><select><option>✔ Var</option><option>❌ Yok</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
-            <div class="checklist-item"><div class="item-row"><span>Klima</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
-        </div>
+                <!-- Yakıt Durumu -->
+                <tr>
+                    <td colspan="8" class="bg-gray center">ARACIN YAKIT DURUMU</td>
+                    <td colspan="8" class="bg-gray center">ARACIN ALT VE MOTOR KONTROLÜ</td>
+                </tr>
+                <tr>
+                    <td colspan="4">Yakıtmatik: <select style="display:inline; width:auto;"><option>Var</option><option>Yok</option></select></td>
+                    <td colspan="4">Seviye: 
+                        <select style="display:inline; width:50px;"><option>Boş</option><option>¼</option><option>½</option><option>¾</option><option>Dolu</option></select>
+                    </td>
+                    <td colspan="5">Yağ / Su / Hidrolik Kaçağı</td>
+                    <td colspan="3"><select><option>Yok ( ✔ )</option><option>Var ( ❌ )</option></select></td>
+                </tr>
+                <tr>
+                    <td colspan="8" class="center bold" style="background:#fafafa;">AMBULANSTA BULUNMASI GEREKEN FORMLAR</td>
+                    <td colspan="5">Motor Yağ / Fren Hidrolik Seviyesi</td>
+                    <td colspan="3"><select><option>Normal ( ✔ )</option><option>Düşük ( ❌ )</option></select></td>
+                </tr>
+                <tr>
+                    <td colspan="5">Ambulans Kaza Formu & Triaj Kartı</td>
+                    <td colspan="3"><select><option>Var ( ✔ )</option><option>Yok ( ❌ )</option></select></td>
+                    <td colspan="5">Akü, Kablolar ve Klima Durumu</td>
+                    <td colspan="3"><select><option>Normal ( ✔ )</option><option>Arızalı ( ❌ )</option></select></td>
+                </tr>
 
-        <div class="form-section">
-            <h3>3. Avadanlık ve Donanım Kontrolü</h3>
-            <div class="checklist-item"><div class="item-row"><span>220 Volt Şarj Kablosu</span><select><option>✔ Var</option><option>❌ Yok</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
-            <div class="checklist-item"><div class="item-row"><span>Baret (3 Adet)</span><select><option>✔ Var</option><option>❌ Yok</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
-            <div class="checklist-item"><div class="item-row"><span>Çekme Halatı / Kriko / Kürek</span><select><option>✔ Var</option><option>❌ Yok</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
-            <div class="checklist-item"><div class="item-row"><span>Yangın Söndürme Tüpü</span><select><option>✔ Var</option><option>❌ Yok</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
-            <div class="checklist-item"><div class="item-row"><span>Ambulans Kaza Formu & Triaj Kartı</span><select><option>✔ Var</option><option>❌ Yok</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
+                <!-- İmza Bölümleri -->
+                <tr>
+                    <td colspan="8" class="bg-gray center">AMBULANSI TESLİM EDEN</td>
+                    <td colspan="8" class="bg-gray center">AMBULANSI TESLİM ALAN</td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="bold">NÖBETÇİ ŞOFÖR</td>
+                    <td colspan="4" style="height: 40px;">İmza:</td>
+                    <td colspan="4" class="bold">NÖBETÇİ ŞOFÖR</td>
+                    <td colspan="4" style="height: 40px;">İmza:</td>
+                </tr>
+            </table>
         </div>
     </div>
 
@@ -122,10 +203,10 @@
             const plaka = document.getElementById('plaka').value;
             const tarih = document.getElementById('tarih').value;
             const km = document.getElementById('km').value || 'Belirtilmedi';
-            const text = `*HABAŞ Gündüz Ambulans Bakım Formu*\n🚗 Plaka: ${plaka}\n📅 Tarih: ${tarih}\n🛣️ KM: ${km}\nDurum: Kontroller tamamlandı.`;
+            const text = `*HABAŞ Gündüz Ambulans Bakım Formu*\n🚗 Plaka: ${plaka}\n📅 Tarih: ${tarih}\n🛣️ KM: ${km}\nDurum: Kontroller eksiksiz tamamlandı.`;
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
         }
     </script>
 </body>
     </html>
-                                                                                                          
+                                                                  
