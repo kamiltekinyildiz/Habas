@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HABAŞ - Günlük Ambulans Denetleme (Gündüz)</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; }
+        
+        .top-header { background: #ea4335; color: white; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .top-header h2 { font-size: 16px; font-weight: bold; }
+        .back-btn { background: rgba(255,255,255,0.2); color: white; padding: 5px 10px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold; border: none; cursor: pointer; }
+
+        .form-container { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; background: #fafafa; }
+        
+        .form-section { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .form-section h3 { font-size: 14px; color: #ea4335; margin-bottom: 10px; border-bottom: 2px solid #f0f2f5; padding-bottom: 5px; }
+        
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; font-size: 13px; }
+        .info-grid label { display: flex; flex-direction: column; font-weight: bold; color: #444; }
+        .info-grid input, .info-grid select { padding: 8px; border: 1px solid #ccc; border-radius: 6px; margin-top: 3px; font-size: 14px; outline: none; }
+
+        .checklist-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f1f3f4; font-size: 13px; }
+        .checklist-item select { padding: 6px 10px; border-radius: 6px; border: 1px solid #ccc; font-weight: bold; font-size: 13px; }
+        
+        .form-actions { padding: 15px; background: white; display: flex; gap: 10px; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); flex-shrink: 0; }
+        .btn-print { flex: 1; background: #1a73e8; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; }
+        .btn-whatsapp { flex: 1; background: #25D366; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; }
+
+        @media print {
+            .top-header, .form-actions { display: none !important; }
+            body { background: white; height: auto; overflow: visible; }
+            .form-container { padding: 0; overflow: visible; background: white; }
+            .form-section { box-shadow: none; border: 1px solid #ddd; margin-bottom: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-header">
+        <h2>🚑 Ambulans Denetleme (Gündüz)</h2>
+        <a href="bilgi.html" class="back-btn">⬅ Geri Dön</a>
+    </div>
+
+    <div class="form-container">
+        <!-- Üst Bilgiler -->
+        <div class="form-section">
+            <h3>Araç ve Vardiya Bilgileri</h3>
+            <div class="info-grid">
+                <label>Plaka:
+                    <select id="plaka">
+                        <option>06 JRY 93</option>
+                        <option>34 JF 8822</option>
+                    </select>
+                </label>
+                <label>Tarih:
+                    <input type="date" id="tarih">
+                </label>
+                <label>Kilometre:
+                    <input type="number" id="km" placeholder="Km giriniz">
+                </label>
+                <label>Konum:
+                    <select id="konum">
+                        <option>Ana Revir</option>
+                        <option>Saç Revir</option>
+                        <option>Diğer</option>
+                    </select>
+                </label>
+            </div>
+        </div>
+
+        <!-- Genel Kontroller -->
+        <div class="form-section">
+            <h3>1. Genel Araç Kontrolleri</h3>
+            <div class="checklist-item"><span>Mali Mesuliyet Sigortası</span><select><option>✔ Uygun</option><option>❌ Eksik</option></select></div>
+            <div class="checklist-item"><span>Aracın Dış Görünüşü (Temizlik)</span><select><option>✔ Uygun</option><option>❌ Eksik</option></select></div>
+            <div class="checklist-item"><span>Araç Ruhsatı</span><select><option>✔ Uygun</option><option>❌ Eksik</option></select></div>
+            <div class="checklist-item"><span>Kaporta Durumu</span><select><option>✔ Uygun</option><option>❌ Hasarlı</option></select></div>
+            <div class="checklist-item"><span>Gösterge Paneli</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div>
+            <div class="checklist-item"><span>Araç Telsizi</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div>
+            <div class="checklist-item"><span>Megafon</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div>
+            <div class="checklist-item"><span>Sirenler ve Tepe Lambaları</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div>
+            <div class="checklist-item"><span>Farlar ve Sinyaller</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div>
+            <div class="checklist-item"><span>Motor Yağı ve Su Seviyesi</span><select><option>✔ Uygun</option><option>❌ Eksik</option></select></div>
+            <div class="checklist-item"><span>Fren ve Direksiyon Sistemi</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div>
+            <div class="checklist-item"><span>Lastikler ve Basınçları</span><select><option>✔ Uygun</option><option>❌ Eksik/Arıza</option></select></div>
+        </div>
+
+        <!-- Tıbbi Donanım -->
+        <div class="form-section">
+            <h3>2. Tıbbi Donanım & Ekipman</h3>
+            <div class="checklist-item"><span>Oksijen Tüpü Basıncı</span><select><option>✔ Uygun</option><option>❌ Eksik</option></select></div>
+            <div class="checklist-item"><span>Oto / Defibrilatör Cihazı</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div>
+            <div class="checklist-item"><span>Aspiratör / Vakum Cihazı</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div>
+            <div class="checklist-item"><span>Boyunluk Seti ve Sedye</span><select><option>✔ Uygun</option><option>❌ Eksik</option></select></div>
+            <div class="checklist-item"><span>Ambu ve Oksijen Maskeleri</span><select><option>✔ Uygun</option><option>❌ Eksik</option></select></div>
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button class="btn-print" onclick="window.print()">🖨️ Yazdır / PDF Al</button>
+        <button class="btn-whatsapp" onclick="shareWhatsApp()">💬 WhatsApp Paylaş</button>
+    </div>
+
+    <script>
+        // Bugünün tarihini otomatik at
+        document.getElementById('tarih').valueAsDate = new Date();
+
+        window.shareWhatsApp = function() {
+            const plaka = document.getElementById('plaka').value;
+            const tarih = document.getElementById('tarih').value;
+            const km = document.getElementById('km').value || 'Belirtilmedi';
+            const konum = document.getElementById('konum').value;
+            
+            const text = `*HABAŞ Gündüz Ambulans Denetim Raporu*\n🚗 Plaka: ${plaka}\n📅 Tarih: ${tarih}\n📍 Konum: ${konum}\n🛣️ KM: ${km}\nDurum: Kontroller yapıldı ve tamamlandı.`;
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+        }
+    </script>
+</body>
+</html>
