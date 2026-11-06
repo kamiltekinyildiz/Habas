@@ -8,9 +8,10 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         body { background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; }
         
-        .top-header { background: #1a73e8; color: white; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+        .top-header { background: #1a73e8; color: white; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .top-header h2 { font-size: 17px; font-weight: bold; }
-        .back-btn { background: rgba(255,255,255,0.2); color: white; padding: 5px 10px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold; }
+        .header-btns { display: flex; gap: 6px; align-items: center; }
+        .action-btn { background: rgba(255,255,255,0.2); color: white; padding: 5px 10px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold; border: none; cursor: pointer; }
 
         #chat-container { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background-color: #e5ddd5; }
         
@@ -20,8 +21,8 @@
         .msg-user { font-size: 12px; font-weight: bold; color: #1a73e8; margin-bottom: 3px; }
         .msg-text { font-size: 15px; color: #333; margin-bottom: 5px; }
         .msg-img { max-width: 100%; border-radius: 6px; margin-top: 5px; display: block; }
-        .msg-time { font-size: 10px; color: #777; text-align: right; margin-top: 4px; display: inline-block; float: right; }
-        .msg-delete { font-size: 11px; color: #dc3545; background: none; border: none; cursor: pointer; margin-right: 10px; }
+        .msg-time { font-size: 10px; color: #777; margin-top: 4px; display: inline-block; float: right; }
+        .msg-delete { font-size: 11px; color: #dc3545; background: none; border: none; cursor: pointer; font-weight: bold; margin-right: 10px; }
 
         .chat-input-bar { background: white; padding: 10px; display: flex; gap: 8px; align-items: center; flex-shrink: 0; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); }
         .chat-input-bar input[type="text"] { flex-grow: 1; padding: 10px 14px; border: 1px solid #ccc; border-radius: 20px; font-size: 15px; outline: none; background: #fafafa; }
@@ -39,18 +40,21 @@
 </head>
 <body>
 
-    <div id="name-modal">
+    <div id="name-modal" style="display: none;">
         <div class="modal-box">
-            <h3>Sohbete Hoş Geldiniz</h3>
-            <p>Adınızı veya unvanınızı yazın:</p>
-            <input type="text" id="username-input" placeholder="Örn: İbrahim (Şoför)" autocomplete="off">
-            <button id="save-name-btn">Sohbete Katıl</button>
+            <h3>Kullanıcı Adı</h3>
+            <p>Adınızı veya unvanınızı girin:</p>
+            <input type="text" id="username-input" placeholder="Örn: Kamil (Şoför)" autocomplete="off">
+            <button id="save-name-btn">Kaydet</button>
         </div>
     </div>
 
     <div class="top-header">
         <h2>💬 Vardiya & Sohbet Panosu</h2>
-        <a href="index.html" class="back-btn">🏠 Ana Menü</a>
+        <div class="header-btns">
+            <button class="action-btn" id="change-name-btn">👤 Ad Değiş</button>
+            <a href="index.html" class="action-btn">🏠 Ana Menü</a>
+        </div>
     </div>
 
     <div id="chat-container"></div>
@@ -83,8 +87,9 @@
         const nameModal = document.getElementById('name-modal');
         const usernameInput = document.getElementById('username-input');
         const saveNameBtn = document.getElementById('save-name-btn');
+        const changeNameBtn = document.getElementById('change-name-btn');
 
-        if (myName) nameModal.style.display = 'none';
+        if (!myName) nameModal.style.display = 'flex';
 
         saveNameBtn.addEventListener('click', () => {
             const name = usernameInput.value.trim();
@@ -93,6 +98,11 @@
                 localStorage.setItem('habas_chat_name', myName);
                 nameModal.style.display = 'none';
             } else { alert("Lütfen adınızı girin!"); }
+        });
+
+        changeNameBtn.addEventListener('click', () => {
+            usernameInput.value = myName;
+            nameModal.style.display = 'flex';
         });
 
         const chatContainer = document.getElementById('chat-container');
