@@ -6,11 +6,11 @@
     <title>HABAŞ - Sohbet & Vardiya Panosu</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        body { background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; }
         
-        .top-header { background: #1a73e8; color: white; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-shrink: 0; }
-        .top-header h2 { font-size: 18px; font-weight: bold; }
-        .back-btn { background: rgba(255,255,255,0.2); color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: bold; }
+        .top-header { background: #1a73e8; color: white; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-shrink: 0; }
+        .top-header h2 { font-size: 17px; font-weight: bold; }
+        .back-btn { background: rgba(255,255,255,0.2); color: white; padding: 5px 10px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold; }
 
         #chat-container { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background-color: #e5ddd5; }
         
@@ -22,11 +22,11 @@
         .msg-img { max-width: 100%; border-radius: 6px; margin-top: 5px; display: block; }
         .msg-time { font-size: 10px; color: #777; text-align: right; margin-top: 4px; }
 
-        .chat-input-bar { background: white; padding: 10px 15px; display: flex; gap: 8px; align-items: center; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); flex-shrink: 0; }
-        .chat-input-bar input[type="text"] { flex-grow: 1; padding: 12px; border: 1px solid #ccc; border-radius: 20px; font-size: 15px; outline: none; }
+        .chat-input-bar { background: white; padding: 10px; display: flex; gap: 8px; align-items: center; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); flex-shrink: 0; }
+        .chat-input-bar input[type="text"] { flex-grow: 1; padding: 10px 14px; border: 1px solid #ccc; border-radius: 20px; font-size: 15px; outline: none; background: #fafafa; }
         
-        .file-upload-btn { background: #e0e0e0; color: #333; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .chat-input-bar button#send-btn { background: #1a73e8; color: white; border: none; border-radius: 50%; width: 42px; height: 42px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+        .file-upload-btn { background: #e0e0e0; color: #333; border: none; border-radius: 50%; width: 38px; height: 38px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .chat-input-bar button#send-btn { background: #1a73e8; color: white; border: none; border-radius: 50%; width: 38px; height: 38px; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
         
         #name-modal { display: flex; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 100; justify-content: center; align-items: center; }
         .modal-box { background: white; padding: 25px; border-radius: 12px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
@@ -42,7 +42,7 @@
         <div class="modal-box">
             <h3>Sohbete Hoş Geldiniz</h3>
             <p>Adınızı veya unvanınızı yazın:</p>
-            <input type="text" id="username-input" placeholder="Örn: İbrahim (Ambulans Şoförü)" autocomplete="off">
+            <input type="text" id="username-input" placeholder="Örn: İbrahim (Şoför)" autocomplete="off">
             <button id="save-name-btn">Sohbete Katıl</button>
         </div>
     </div>
@@ -136,7 +136,7 @@
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(uploadEvent) {
-                    sendData("📷 Görsel paylaşıldı:", uploadEvent.target.result);
+                    sendData("📷 Görsel / Yemek Listesi:", uploadEvent.target.result);
                 };
                 reader.readAsDataURL(file);
             }
