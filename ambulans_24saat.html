@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HABAŞ - Günlük Ambulans Denetleme (24 Saat)</title>
+    <title>HABAŞ - Günlük Ambulans Bakım Formu (24 Saat)</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         body { background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; }
         
         .top-header { background: #ea4335; color: white; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .top-header h2 { font-size: 16px; font-weight: bold; }
+        .top-header h2 { font-size: 15px; font-weight: bold; }
         .back-btn { background: rgba(255,255,255,0.2); color: white; padding: 5px 10px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold; border: none; cursor: pointer; }
 
         .form-container { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; background: #fafafa; }
@@ -21,8 +21,11 @@
         .info-grid label { display: flex; flex-direction: column; font-weight: bold; color: #444; }
         .info-grid input, .info-grid select { padding: 8px; border: 1px solid #ccc; border-radius: 6px; margin-top: 3px; font-size: 14px; outline: none; }
 
-        .checklist-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f1f3f4; font-size: 13px; }
+        .checklist-item { display: flex; flex-direction: column; gap: 5px; padding: 10px 0; border-bottom: 1px solid #f1f3f4; font-size: 13px; }
+        .item-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
         .checklist-item select { padding: 6px 10px; border-radius: 6px; border: 1px solid #ccc; font-weight: bold; font-size: 13px; }
+        .checklist-item input[type="text"] { width: 100%; padding: 6px 10px; border: 1px dashed #ccc; border-radius: 6px; font-size: 12px; outline: none; background: #fffdfd; margin-top: 4px; }
+        .checklist-item input[type="text"]:focus { border-color: #ea4335; border-style: solid; }
         
         .form-actions { padding: 15px; background: white; display: flex; gap: 10px; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); flex-shrink: 0; }
         .btn-print { flex: 1; background: #1a73e8; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; }
@@ -33,18 +36,18 @@
             body { background: white; height: auto; overflow: visible; }
             .form-container { padding: 0; overflow: visible; background: white; }
             .form-section { box-shadow: none; border: 1px solid #ddd; margin-bottom: 10px; }
+            .checklist-item input[type="text"] { border: 1px solid #999; }
         }
     </style>
 </head>
 <body>
 
     <div class="top-header">
-        <h2>🚑 Ambulans Denetleme (24 Saat)</h2>
+        <h2>GÜNLÜK AMBULANS BAKIM FORMU (24 SAAT)</h2>
         <a href="bilgi.html" class="back-btn">⬅ Geri Dön</a>
     </div>
 
     <div class="form-container">
-        <!-- Üst Bilgiler -->
         <div class="form-section">
             <h3>Araç ve Vardiya Bilgileri (24 Saat)</h3>
             <div class="info-grid">
@@ -63,38 +66,48 @@
                 <label>Konum:
                     <select id="konum">
                         <option>Ana Revir</option>
-                        <option>Saç Revir</option>
+                        <option>Sac Revir</option>
                         <option>Diğer</option>
                     </select>
                 </label>
             </div>
         </div>
 
-        <!-- Genel Kontroller -->
         <div class="form-section">
-            <h3>1. 24 Saatlik Genel Kontroller</h3>
-            <div class="checklist-item"><span>Mali Mesuliyet Sigortası</span><select><option>✔ Uygun</option><option>❌ Eksik</option></select></div>
-            <div class="checklist-item"><span>Aracın Dış Görünüşü (Temizlik)</span><select><option>✔ Uygun</option><option>❌ Eksik</option></select></div>
-            <div class="checklist-item"><span>Araç Ruhsatı</span><select><option>✔ Uygun</option><option>❌ Eksik</option></select></div>
-            <div class="checklist-item"><span>Kaporta Durumu</span><select><option>✔ Uygun</option><option>❌ Hasarlı</option></select></div>
-            <div class="checklist-item"><span>Gösterge Paneli</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div>
-            <div class="checklist-item"><span>Araç Telsizi</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div>
-            <div class="checklist-item"><span>Megafon</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div>
-            <div class="checklist-item"><span>Sirenler ve Tepe Lambaları</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div>
-            <div class="checklist-item"><span>Farlar ve Sinyaller</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div>
-            <div class="checklist-item"><span>Motor Yağı ve Su Seviyesi</span><select><option>✔ Uygun</option><option>❌ Eksik</option></select></div>
-            <div class="checklist-item"><span>Fren ve Direksiyon Sistemi</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div>
-            <div class="checklist-item"><span>Lastikler ve Basınçları</span><select><option>✔ Uygun</option><option>❌ Eksik/Arıza</option></select></div>
+            <h3>1. 24 Saatlik Genel Araç Kontrolleri</h3>
+            <div class="checklist-item"><div class="item-row"><span>Mali Mesuliyet Sigortası</span><select><option>✔ Uygun</option><option>❌ Eksik</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
+            <div class="checklist-item"><div class="item-row"><span>Aracın Dış Görünüşü (Temizlik)</span><select><option>✔ Uygun</option><option>❌ Kirli</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
+            <div class="checklist-item"><div class="item-row"><span>Araç Ruhsatı</span><select><option>✔ Uygun</option><option>❌ Eksik</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
+            <div class="checklist-item"><div class="item-row"><span>Kaporta Durumu</span><select><option>✔ Uygun</option><option>❌ Hasarlı</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
+            <div class="checklist-item"><div class="item-row"><span>Gösterge Paneli</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
+            <div class="checklist-item"><div class="item-row"><span>Araç Telsizi</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
+            <div class="checklist-item"><div class="item-row"><span>Megafon</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
+            <div class="checklist-item"><div class="item-row"><span>Sirenler ve Tepe Lambaları</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
+            <div class="checklist-item"><div class="item-row"><span>Farlar ve Sinyaller</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
+            <div class="checklist-item"><div class="item-row"><span>Motor Yağı ve Su Seviyesi</span><select><option>✔ Uygun</option><option>❌ Eksik</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
+            <div class="checklist-item"><div class="item-row"><span>Fren ve Direksiyon Sistemi</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
+            <div class="checklist-item"><div class="item-row"><span>Lastikler ve Diş Derinliği</span><select><option>✔ Uygun</option><option>❌ Eksik/Arıza</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
         </div>
 
-        <!-- Tıbbi Donanım -->
         <div class="form-section">
-            <h3>2. Tıbbi Donanım & Ekipman (24 Saat)</h3>
-            <div class="checklist-item"><span>Oksijen Tüpü Basıncı</span><select><option>✔ Uygun</option><option>❌ Eksik</option></select></div>
-            <div class="checklist-item"><span>Oto / Defibrilatör Cihazı</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div>
-            <div class="checklist-item"><span>Aspiratör / Vakum Cihazı</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div>
-            <div class="checklist-item"><span>Boyunluk Seti ve Sedye</span><select><option>✔ Uygun</option><option>❌ Eksik</option></select></div>
-            <div class="checklist-item"><span>Ambu ve Oksijen Maskeleri</span><select><option>✔ Uygun</option><option>❌ Eksik</option></select></div>
+            <h3>2. 24 Saatlik Alt ve Motor Kontrolü</h3>
+            <div class="checklist-item"><div class="item-row"><span>Yağ Damlaması Var mı?</span><select><option>✔ Uygun (Yok)</option><option>❌ Var</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
+            <div class="checklist-item"><div class="item-row"><span>Su Kaçağı Var mı?</span><select><option>✔ Uygun (Yok)</option><option>❌ Var</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
+            <div class="checklist-item"><div class="item-row"><span>Hidrolik Kaçağı Var mı?</span><select><option>✔ Uygun (Yok)</option><option>❌ Var</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
+            <div class="checklist-item"><div class="item-row"><span>Yakıt Kaçağı Var mı?</span><select><option>✔ Uygun (Yok)</option><option>❌ Var</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
+            <div class="checklist-item"><div class="item-row"><span>Motor Kaputu Açma Sistemi</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
+            <div class="checklist-item"><div class="item-row"><span>Akümülatör Durumu</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
+            <div class="checklist-item"><div class="item-row"><span>Stepne</span><select><option>✔ Var</option><option>❌ Yok</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
+            <div class="checklist-item"><div class="item-row"><span>Klima</span><select><option>✔ Uygun</option><option>❌ Arızalı</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
+        </div>
+
+        <div class="form-section">
+            <h3>3. 24 Saatlik Donanım ve Avadanlık</h3>
+            <div class="checklist-item"><div class="item-row"><span>220 Volt Şarj Kablosu</span><select><option>✔ Var</option><option>❌ Yok</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
+            <div class="checklist-item"><div class="item-row"><span>Baret (3 Adet)</span><select><option>✔ Var</option><option>❌ Yok</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
+            <div class="checklist-item"><div class="item-row"><span>Çekme Halatı / Kriko / Kürek</span><select><option>✔ Var</option><option>❌ Yok</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
+            <div class="checklist-item"><div class="item-row"><span>Yangın Söndürme Tüpü</span><select><option>✔ Var</option><option>❌ Yok</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
+            <div class="checklist-item"><div class="item-row"><span>Ambulans Kaza Formu & Triaj Kartı</span><select><option>✔ Var</option><option>❌ Yok</option></select></div><input type="text" placeholder="Açıklama / Not yazmak için tıklayın..."></div>
         </div>
     </div>
 
@@ -105,16 +118,14 @@
 
     <script>
         document.getElementById('tarih').valueAsDate = new Date();
-
         window.shareWhatsApp = function() {
             const plaka = document.getElementById('plaka').value;
             const tarih = document.getElementById('tarih').value;
             const km = document.getElementById('km').value || 'Belirtilmedi';
-            const konum = document.getElementById('konum').value;
-            
-            const text = `*HABAŞ 24 Saat Ambulans Denetim Raporu*\n🚗 Plaka: ${plaka}\n📅 Tarih: ${tarih}\n📍 Konum: ${konum}\n🛣️ KM: ${km}\nDurum: 24 Saatlik kontroller yapıldı ve tamamlandı.`;
+            const text = `*HABAŞ 24 Saat Ambulans Bakım Formu*\n🚗 Plaka: ${plaka}\n📅 Tarih: ${tarih}\n🛣️ KM: ${km}\nDurum: Kontroller tamamlandı.`;
             window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
         }
     </script>
 </body>
-</html>
+                                                                                                          </html>
+                                                                                                          
