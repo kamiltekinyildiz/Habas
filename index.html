@@ -22,7 +22,7 @@
         .card-chat { border-top: 4px solid #34a853; }
         .card-report { border-top: 4px solid #fbbc05; }
         .card-info { border-top: 4px solid #ea4335; }
-        .card-admin { border-top: 4px solid #000; display: none; background: #fff3f3; } /* Sadece Yöneticide Görünür */
+        .card-admin { border-top: 4px solid #000; display: none; background: #fff3f3; }
 
         /* GİRİŞ EKRANI */
         #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #1a73e8; display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
@@ -37,13 +37,13 @@
 </head>
 <body>
 
-    <!-- KAYIT / GİRİŞ EKRANI -->
+    <!-- GİRİŞ EKRANI -->
     <div id="login-overlay">
         <div class="login-box">
             <h2>HABAŞ Portal</h2>
             <p>Sisteme erişmek için bilgilerinizi giriniz</p>
             <input type="text" id="reg-name" placeholder="Ad Soyad" autocomplete="off">
-            <input type="text" id="reg-sicil" placeholder="Sicil Numarası (Yönetici: 1000)" autocomplete="off">
+            <input type="text" id="reg-sicil" placeholder="Sicil Numarası" autocomplete="off">
             <input type="text" id="reg-firma" placeholder="Firma (HABAŞ, Taşeron vb.)" autocomplete="off">
             <input type="tel" id="reg-phone" placeholder="Telefon Numarası" autocomplete="off">
             <button onclick="saveUser()">Sisteme Giriş Yap</button>
@@ -59,10 +59,10 @@
     <div class="dashboard-grid">
         <a href="harita.html" class="card card-map"><div class="card-icon">🗺️</div><div class="card-title">Fabrika Haritası</div></a>
         <a href="sohbet.html" class="card card-chat"><div class="card-icon">💬</div><div class="card-title">Sohbet / Vardiya</div></a>
-        <a href="notlar.html" class="card card-report"><div class="card-icon">📋</div><div class="card-title">Raporlama</div></a>
+        <a href="rapor.html" class="card card-report"><div class="card-icon">📋</div><div class="card-title">Raporlama</div></a>
         <a href="bilgi.html" class="card card-info"><div class="card-icon">ℹ️</div><div class="card-title">Bilgiler</div></a>
         
-        <!-- YÖNETİCİ PANELİ (Sicil: 1000 olana açılır) -->
+        <!-- YÖNETİCİ PANELİ (Sicil: 253525 olana açılır) -->
         <a href="admin.html" class="card card-admin" id="admin-panel-btn"><div class="card-icon">🛡️</div><div class="card-title">Yönetici Paneli</div></a>
     </div>
 
@@ -80,8 +80,8 @@
                 loginOverlay.style.display = 'none';
                 userNameDisplay.innerText = user.name;
                 
-                // Yönetici Kontrolü (Sicil No 1000 ise Yönetici Paneli Görünür)
-                if(user.sicil === "1000") {
+                // Yönetici Kontrolü (Sicil No 253525 ise Yönetici Paneli Görünür)
+                if(user.sicil === "253525") {
                     adminBtn.style.display = 'flex';
                 }
             }
@@ -103,7 +103,6 @@
             checkUser();
         }
 
-        // Sayfa yüklenince kontrol et
         checkUser();
     </script>
 </body>
