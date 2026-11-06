@@ -18,7 +18,7 @@
         .msg-text { font-size: 15px; color: #333; margin-bottom: 5px; }
         .msg-img { max-width: 100%; border-radius: 6px; margin-top: 5px; display: block; }
         .msg-time { font-size: 10px; color: #777; margin-top: 4px; float: right; }
-        .msg-delete { font-size: 11px; color: #dc3545; background: none; border: none; cursor: pointer; font-weight: bold; margin-right: 10px; display: none; } /* Varsayılan Gizli */
+        .msg-delete { font-size: 11px; color: #dc3545; background: none; border: none; cursor: pointer; font-weight: bold; margin-right: 10px; display: none; }
         .chat-input-bar { background: white; padding: 10px; display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
         .chat-input-bar input[type="text"] { flex-grow: 1; padding: 10px 14px; border: 1px solid #ccc; border-radius: 20px; font-size: 15px; outline: none; }
         .file-upload-btn, #send-btn { background: #1a73e8; color: white; border: none; border-radius: 50%; width: 38px; height: 38px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
@@ -46,7 +46,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         
-        // Kullanıcı bilgisini al, yoksa Ana Menüye at
         const savedData = localStorage.getItem('habas_user_data');
         if(!savedData) { window.location.href = 'index.html'; }
         const myUser = JSON.parse(savedData);
@@ -54,7 +53,7 @@
         const chatContainer = document.getElementById('chat-container');
         const messageInput = document.getElementById('message-input');
         const chatRef = ref(db, 'habas_chat_room');
-        const auditRef = ref(db, 'habas_audit_logs'); // Yönetici için silinme kayıtları
+        const auditRef = ref(db, 'habas_audit_logs');
 
         function sendData(text, imageBase64 = null) {
             push(chatRef, {
@@ -81,10 +80,8 @@
             }
         });
 
-        // Silme İşlemi (Önce log atar, sonra siler)
         window.deleteMessage = function(id, msgText, msgSender) {
             if (confirm("Bu mesajı silmek istiyor musunuz?")) {
-                // Yöneticiye Log Düş
                 push(auditRef, {
                     actionBy: myUser.name,
                     actionSicil: myUser.sicil,
@@ -111,9 +108,9 @@
                     if (msg.text) contentHtml += `<div class="msg-text">${msg.text}</div>`;
                     if (msg.image) contentHtml += `<img src="${msg.image}" class="msg-img">`;
                     
-                    // SADECE KENDİ MESAJIYSA VEYA YÖNETİCİYSE (Sicil 1000) SİL BUTONU GÖSTER
+                    // SADECE KENDİSİ VEYA YÖNETİCİ (Sicil: 253525) SİLEBİLİR
                     let deleteBtnHtml = "";
-                    if(msg.sicil === myUser.sicil || myUser.sicil === "1000") {
+                    if(msg.sicil === myUser.sicil || myUser.sicil === "253525") {
                         deleteBtnHtml = `<button class="msg-delete" style="display:inline-block;" onclick="window.deleteMessage('${id}', '${msg.text}', '${msg.sender}')">Sil</button>`;
                     }
 
