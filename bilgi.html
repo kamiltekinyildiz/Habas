@@ -3,16 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HABAŞ - Telefon Rehberi</title>
+    <title>HABAŞ - Faydalı Bilgiler</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         body { background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; }
         
         .top-header { background: #ea4335; color: white; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .top-header h2 { font-size: 17px; font-weight: bold; }
-        .back-btn { background: rgba(255,255,255,0.2); color: white; padding: 5px 10px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold; }
+        .back-btn { background: rgba(255,255,255,0.2); color: white; padding: 5px 10px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold; cursor: pointer; border: none; }
 
-        .search-area { padding: 15px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); z-index: 10; flex-shrink: 0; }
+        /* 1. Ana Menü Butonları */
+        #menu-view { padding: 20px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; flex-grow: 1; }
+        .menu-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 15px; cursor: pointer; border-left: 6px solid #ea4335; transition: transform 0.1s; }
+        .menu-card:active { transform: scale(0.98); }
+        .menu-icon { font-size: 32px; }
+        .menu-title { font-size: 16px; font-weight: bold; color: #333; }
+        .menu-desc { font-size: 13px; color: #666; margin-top: 3px; }
+
+        /* 2. Alt Görünümler (Rehber, Formlar vb.) */
+        .sub-view { display: none; flex-direction: column; height: 100%; flex-grow: 1; background: #f0f2f5; }
+        
+        /* Rehber İçi Arama */
+        .search-area { padding: 15px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); flex-shrink: 0; }
         .search-area input { width: 100%; padding: 12px 15px; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; outline: none; background: #fafafa; }
         .search-area input:focus { border-color: #ea4335; background: #fff; }
 
@@ -29,32 +41,120 @@
         .call-btn:active { transform: scale(0.95); }
         
         .no-result { text-align: center; color: #888; font-size: 14px; margin-top: 20px; }
+
+        /* Boş Form Ekranları İçin Geçici Tasarım */
+        .coming-soon { text-align: center; padding: 40px 20px; color: #666; font-size: 15px; }
     </style>
 </head>
 <body>
 
+    <!-- Üst Bar -->
     <div class="top-header">
-        <h2>📞 Dahili Telefon Rehberi</h2>
-        <a href="index.html" class="back-btn">🏠 Ana Menü</a>
+        <h2 id="header-title">ℹ️ Faydalı Bilgiler</h2>
+        <button class="back-btn" id="header-back-btn" onclick="goBack()">🏠 Ana Menü</button>
     </div>
 
-    <div class="search-area">
-        <input type="text" id="search-contact" placeholder="İsim, birim veya dahili numara ara..." autocomplete="off">
+    <!-- ANA MENÜ EKRANI -->
+    <div id="menu-view">
+        <div class="menu-card" onclick="openView('directory-view', '📞 Telefon Rehberi')">
+            <div class="menu-icon">📞</div>
+            <div>
+                <div class="menu-title">Dahili Telefon Rehberi</div>
+                <div class="menu-desc">Fabrika içi birimlere hızlı arama yapın</div>
+            </div>
+        </div>
+
+        <div class="menu-card" onclick="openView('ambulance-form-view', '🚑 Ambulans Formu')">
+            <div class="menu-icon">🚑</div>
+            <div>
+                <div class="menu-title">Ambulans Araç Denetleme Formu</div>
+                <div class="menu-desc">Günlük araç ve donanım kontrolü</div>
+            </div>
+        </div>
+
+        <div class="menu-card" onclick="openView('medical-form-view', '💊 İlaç Kontrol Formu')">
+            <div class="menu-icon">💊</div>
+            <div>
+                <div class="menu-title">İlaç & Sarf Malzeme Formu</div>
+                <div class="menu-desc">Stok ve malzeme kontrolü</div>
+            </div>
+        </div>
     </div>
 
-    <div class="results-area" id="contact-list">
-        <!-- Liste buraya JS ile gelecek -->
+    <!-- REHBER EKRANI -->
+    <div id="directory-view" class="sub-view">
+        <div class="search-area">
+            <input type="text" id="search-contact" placeholder="İsim, birim veya dahili numara ara..." autocomplete="off">
+        </div>
+        <div class="results-area" id="contact-list">
+            <!-- Liste JS ile gelecek -->
+        </div>
+    </div>
+
+    <!-- AMBULANS FORMU EKRANI (ŞİMDİLİK BOŞ) -->
+    <div id="ambulance-form-view" class="sub-view">
+        <div class="coming-soon">
+            <h3>🚑 Ambulans Formu</h3>
+            <p style="margin-top:10px;">Bu bölüm detaylar gelince aktif edilecektir.</p>
+        </div>
+    </div>
+
+    <!-- İLAÇ FORMU EKRANI (ŞİMDİLİK BOŞ) -->
+    <div id="medical-form-view" class="sub-view">
+        <div class="coming-soon">
+            <h3>💊 İlaç Kontrol Formu</h3>
+            <p style="margin-top:10px;">Bu bölüm detaylar gelince aktif edilecektir.</p>
+        </div>
     </div>
 
     <script>
-        // Görsellerden elde edilen HABAŞ Dahili Telefon Rehberi
+        const menuView = document.getElementById('menu-view');
+        const directoryView = document.getElementById('directory-view');
+        const ambulanceFormView = document.getElementById('ambulance-form-view');
+        const medicalFormView = document.getElementById('medical-form-view');
+        
+        const headerTitle = document.getElementById('header-title');
+        const headerBackBtn = document.getElementById('header-back-btn');
+
+        // Sayfalar arası geçiş mantığı
+        function openView(viewId, title) {
+            menuView.style.display = 'none';
+            directoryView.style.display = 'none';
+            ambulanceFormView.style.display = 'none';
+            medicalFormView.style.display = 'none';
+
+            document.getElementById(viewId).style.display = 'flex';
+            headerTitle.innerText = title;
+            
+            // Üstteki Geri butonunu "Faydalı Bilgilere Dön" olarak ayarla
+            headerBackBtn.innerText = '⬅ Geri Dön';
+            headerBackBtn.onclick = closeViews;
+        }
+
+        function closeViews() {
+            directoryView.style.display = 'none';
+            ambulanceFormView.style.display = 'none';
+            medicalFormView.style.display = 'none';
+            menuView.style.display = 'flex';
+            
+            headerTitle.innerText = 'ℹ️ Faydalı Bilgiler';
+            
+            // Üstteki Geri butonunu tekrar Ana Menü'ye yönlendir
+            headerBackBtn.innerText = '🏠 Ana Menü';
+            headerBackBtn.onclick = () => window.location.href = 'index.html';
+        }
+
+        // Ana Menü (index.html) yönlendirmesi için ilk ayar
+        headerBackBtn.onclick = () => window.location.href = 'index.html';
+
+
+        // REHBER VERİLERİ
         const contacts = [
-            // --- 1. ÖNCELİKLİ BİRİMLER (Revirler, Güvenlik, Teknik Emniyet) ---
+            // --- 1. ÖNCELİKLİ BİRİMLER (Santral, Revirler, Güvenlik, Teknik Emniyet) ---
+            { name: "HABAŞ Ana Santral", unit: "Fabrika Santral", phone: "02326251170", priority: true },
             { name: "Fabrika REVİR (Ana Revir)", unit: "Sağlık Kliniği", phone: "1333", priority: true },
             { name: "Saç REVİR", unit: "Sağlık Kliniği", phone: "1134", priority: true },
             { name: "Liman REVİR", unit: "Sağlık Kliniği", phone: "1707", priority: true },
-            { name: "Dr. Berkant Adalı", unit: "İşyeri Hekimi", phone: "1130", priority: true },
-            { name: "Dr. Şakir Karıncaoğlu - Dr. Zahit Porsuk", unit: "İşyeri Hekimi", phone: "1131", priority: true },
             { name: "Güvenlik Müdürü (Bülent Kurtarıcı)", unit: "Güvenlik", phone: "1660", priority: true },
             { name: "Fabrika Ön Kapı Güvenlik", unit: "Güvenlik", phone: "1662", priority: true },
             { name: "Liman Yolu Giriş Güvenlik", unit: "Güvenlik", phone: "1671", priority: true },
@@ -63,7 +163,8 @@
             { name: "Liman Teknik Emniyet", unit: "Teknik Emniyet", phone: "1776", priority: true },
 
             // --- 2. DİĞER BİRİMLER VE PERSONELLER ---
-            { name: "Santral / Ana Santral", unit: "Santral", phone: "02326251170" },
+            { name: "Dr. Berkant Adalı", unit: "İşyeri Hekimi", phone: "1130" },
+            { name: "Dr. Şakir Karıncaoğlu - Dr. Zahit Porsuk", unit: "İşyeri Hekimi", phone: "1131" },
             { name: "Santral Memuru", unit: "Santral", phone: "1001" },
             { name: "Mehmet Boran", unit: "Çelikhane Danışman", phone: "1201" },
             { name: "Erdem Günay", unit: "Çelikhane Müdürü", phone: "1205" },
@@ -150,13 +251,13 @@
             list.forEach(c => {
                 const card = document.createElement('div');
                 card.classList.add('contact-card');
-                if(c.priority) card.classList.add('priority'); // Öncelikli olanların sol çizgisi kırmızı olur
+                if(c.priority) card.classList.add('priority'); 
                 
                 card.innerHTML = `
                     <div class="contact-info">
                         <h4>${c.name}</h4>
                         <p>${c.unit}</p>
-                        <p>Dahili: <b>${c.phone}</b></p>
+                        <p>Dahili/Tel: <b>${c.phone}</b></p>
                     </div>
                     <a href="tel:${c.phone}" class="call-btn">📞 Ara</a>
                 `;
@@ -164,10 +265,8 @@
             });
         }
 
-        // Sayfa yüklendiğinde tam listeyi göster
         renderContacts(contacts);
 
-        // Arama kutusu çalıştığında filtrele
         searchInput.addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase().trim();
             const filtered = contacts.filter(c => 
@@ -179,4 +278,5 @@
         });
     </script>
 </body>
-</html>
+    </html>
+    
