@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HABAŞ - Sohbet & Vardiya Panosu</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        
+        /* Üst Bar */
+        .top-header { background: #1a73e8; color: white; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10; }
+        .top-header h2 { font-size: 18px; font-weight: bold; }
+        .back-btn { background: rgba(255,255,255,0.2); color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: bold; }
+
+        /* Mesaj Alanı */
+        #chat-container { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background-color: #e5ddd5; }
+        
+        .message-card { background: white; padding: 10px 14px; border-radius: 8px; max-width: 85%; box-shadow: 0 1px 2px rgba(0,0,0,0.1); word-break: break-word; align-self: flex-start; }
+        .message-card.my-message { background: #dcf8c6; align-self: flex-end; }
+        
+        .msg-user { font-size: 12px; font-weight: bold; color: #1a73e8; margin-bottom: 3px; }
+        .msg-text { font-size: 15px; color: #333; }
+        .msg-time { font-size: 10px; color: #777; text-align: right; margin-top: 4px; }
+
+        /* Alt Yazma Kutusu */
+        .chat-input-bar { background: white; padding: 10px 15px; display: flex; gap: 10px; align-items: center; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); }
+        .chat-input-bar input { flex-grow: 1; padding: 12px; border: 1px solid #ccc; border-radius: 20px; font-size: 15px; outline: none; }
+        .chat-input-bar button { background: #1a73e8; color: white; border: none; border-radius: 50%; width: 45px; height: 45px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        
+        /* İsim Giriş Modal Alanı */
+        #name-modal { display: flex; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 100; justify-content: center; align-items: center; }
+        .modal-box { background: white; padding: 25px; border-radius: 12px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .modal-box h3 { margin-bottom: 10px; color: #333; }
+        .modal-box p { font-size: 13px; color: #666; margin-bottom: 15px; }
+        .modal-box input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; margin-bottom: 15px; text-align: center; outline: none; }
+        .modal-box button { width: 100%; background: #1a73e8; color: white; padding: 12px; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <!-- İlk Girişte İsim Sorma Modalı -->
+    <div id="name-modal">
+        <div class="modal-box">
+            <h3>Sohbete Hoş Geldiniz</h3>
+            <p>Mesai arkadaşlarınızın sizi tanıması için adınızı veya unvanınızı yazın:</p>
+            <input type="text" id="username-input" placeholder="Örn: İbrahim (Ambulans Şoförü)" autocomplete="off">
+            <button id="save-name-btn">Sohbete Katıl</button>
+        </div>
+    </div>
+
+    <!-- Üst Başlık -->
+    <div class="top-header">
+        <h2>💬 Vardiya & Sohbet Panosu</h2>
+        <a href="index.html" class="back-btn">🏠 Ana Menü</a>
+    </div>
+
+    <!-- Mesaj Akışı -->
+    <div id="chat-container"></div>
+
+    <!-- Mesaj Gönderme Çubuğu -->
+    <div class="chat-input-bar">
+        <input type="text" id="message-input" placeholder="Mesaj yazın..." autocomplete="off">
+        <button id="send-btn">➤</button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, push, onValue, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyDrWXMQRR74_B5faBNijiT1zXfYHA-MWtM",
+          authDomain: "habas-navigasyon.firebaseapp.com",
+          databaseURL: "https://habas-navigasyon-default-rtdb.europe-west1.firebasedatabase.app",
+          projectId: "habas-navigasyon",
+          storageBucket: "habas-navigasyon.firebasestorage.app",
+          messagingSenderId: "1096725065152",
+          appId: "1:1096725065152:web:f30a0e53b7adb2683f2c25"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        let myName = localStorage.getItem('habas_chat_name') || "";
+        const nameModal = document.getElementById('name-modal');
+        const usernameInput = document.getElementById('username-input');
+        const saveNameBtn = document.getElementById('save-name-btn');
+
+        if (myName) {
+            nameModal.style.display = 'none';
+        }
+
+        saveNameBtn.addEventListener('click', () => {
+            const name = usernameInput.value.trim();
+            if (name) {
+                myName = name;
+                localStorage.setItem('habas_chat_name', myName);
+                nameModal.style.display = 'none';
+            } else {
+                alert("Lütfen geçerli bir isim girin!");
+            }
+        });
+
+        const chatContainer = document.getElementById('chat-container');
+        const messageInput = document.getElementById('message-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        const chatRef = ref(db, 'habas_chat');
+
+        // Mesaj Gönderme Fonksiyonu
+        function sendMessage() {
+            const text = messageInput.value.trim();
+            if (!text) return;
+            if (!myName) {
+                nameModal.style.display = 'flex';
+                return;
+            }
+
+            push(chatRef, {
+                sender: myName,
+                text: text,
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            });
+
+            messageInput.value = '';
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // Firebase'den Mesajları Dinleme ve Listeleme
+        onValue(chatRef, (snapshot) => {
+            chatContainer.innerHTML = '';
+            const data = snapshot.val();
+            if (data) {
+                Object.values(data).forEach(msg => {
+                    const card = document.createElement('div');
+                    card.classList.add('message-card');
+                    if (msg.sender === myName) {
+                        card.classList.add('my-message');
+                    }
+
+                    card.innerHTML = `
+                        <div class="msg-user">${msg.sender}</div>
+                        <div class="msg-text">${msg.text}</div>
+                        <div class="msg-time">${msg.time || ''}</div>
+                    `;
+                    chatContainer.appendChild(card);
+                });
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+        });
+    </script>
+</body>
+</html>
