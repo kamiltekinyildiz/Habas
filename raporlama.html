@@ -3,19 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HABAŞ - Raporlama & Arıza Bildirimi</title>
+    <title>HABAŞ - Rapor & Not Defteri</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         body { background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         
-        /* Üst Bar */
-        .top-header { background: #fbbc05; color: #333; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10; }
+        .top-header { background: #fbbc05; color: #333; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-shrink: 0; }
         .top-header h2 { font-size: 18px; font-weight: bold; }
         .back-btn { background: rgba(0,0,0,0.1); color: #333; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: bold; }
 
-        /* Rapor Listesi Alanı */
-        #report-container { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
-        
+        .content-area { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+
+        /* Not Defteri Bölümü */
+        .notepad-section { background: #fffde7; border: 1px solid #ffe082; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .notepad-section h3 { font-size: 15px; color: #f57f17; margin-bottom: 8px; }
+        .notepad-section textarea { width: 100%; height: 110px; padding: 10px; border: 1px solid #ffd54f; border-radius: 6px; font-size: 14px; resize: none; outline: none; background: #fff; }
+        .notepad-btn { background: #fbc02d; color: #fff; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; margin-top: 8px; width: 100%; }
+
+        /* Rapor Kartları */
         .report-card { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); border-left: 5px solid #fbbc05; }
         .report-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
         .report-user { font-size: 13px; font-weight: bold; color: #1a73e8; }
@@ -23,34 +28,39 @@
         .report-title { font-size: 16px; font-weight: bold; color: #333; margin-bottom: 5px; }
         .report-desc { font-size: 14px; color: #555; word-break: break-word; }
 
-        /* Alt Veri Giriş Alanı */
-        .report-input-bar { background: white; padding: 12px 15px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); }
+        .report-input-bar { background: white; padding: 12px 15px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); flex-shrink: 0; }
         .report-input-bar input, .report-input-bar textarea { width: 100%; padding: 10px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; outline: none; }
-        .report-input-bar textarea { resize: none; height: 60px; }
+        .report-input-bar textarea { resize: none; height: 50px; }
         .report-input-bar button { background: #fbbc05; color: #333; border: none; border-radius: 6px; padding: 12px; font-size: 15px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <!-- Üst Başlık -->
     <div class="top-header">
-        <h2>📋 Raporlama & Arıza</h2>
+        <h2>📋 Raporlar & Not Defteri</h2>
         <a href="index.html" class="back-btn">🏠 Ana Menü</a>
     </div>
 
-    <!-- Rapor Akışı -->
-    <div id="report-container"></div>
+    <div class="content-area">
+        <!-- Ortak Not Defteri (İlaç / Araç Eksikleri) -->
+        <div class="notepad-section">
+            <h3>📝 Ortak Not Defteri (İlaç Eksiği & Araç Bakım Notları)</h3>
+            <textarea id="notepad-input" placeholder="Buraya yazıp kaydettiğiniz not herkes tarafından görünür ve güncellenebilir..."></textarea>
+            <button class="notepad-btn" id="save-notepad-btn">Notu Kaydet / Güncelle</button>
+        </div>
 
-    <!-- Yeni Rapor Ekleme Çubuğu -->
+        <div id="report-container"></div>
+    </div>
+
     <div class="report-input-bar">
-        <input type="text" id="report-title-input" placeholder="Bildirim Başlığı (Örn: Çelikhane Hat-2 Arıza)" autocomplete="off">
-        <textarea id="report-desc-input" placeholder="Detaylar veya açıklama yazın..."></textarea>
+        <input type="text" id="report-title-input" placeholder="Bildirim Başlığı (Örn: Ambulans Bakım / İlaç Takip)" autocomplete="off">
+        <textarea id="report-desc-input" placeholder="Detaylar..."></textarea>
         <button id="submit-report-btn">Raporu Gönder</button>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyDrWXMQRR74_B5faBNijiT1zXfYHA-MWtM",
@@ -65,21 +75,41 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
+        // Not Defteri Mantığı
+        const notepadInput = document.getElementById('notepad-input');
+        const saveNotepadBtn = document.getElementById('save-notepad-btn');
+        const notepadRef = ref(db, 'habas_notepad');
+
+        saveNotepadBtn.addEventListener('click', () => {
+            set(notepadRef, {
+                text: notepadInput.value,
+                updatedBy: localStorage.getItem('habas_chat_name') || "Personel",
+                time: new Date().toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })
+            });
+            alert("Not defteri başarıyla kaydedildi!");
+        });
+
+        onValue(notepadRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data && data.text) {
+                notepadInput.value = data.text;
+            }
+        });
+
+        // Raporlar Mantığı
         const reportContainer = document.getElementById('report-container');
         const titleInput = document.getElementById('report-title-input');
         const descInput = document.getElementById('report-desc-input');
         const submitBtn = document.getElementById('submit-report-btn');
-
         const reportsRef = ref(db, 'habas_reports');
 
-        // Rapor Gönderme
         submitBtn.addEventListener('click', () => {
             const title = titleInput.value.trim();
             const desc = descInput.value.trim();
             const myName = localStorage.getItem('habas_chat_name') || "Personel";
 
             if (!title || !desc) {
-                alert("Lütfen başlık ve açıklama kısımlarını doldurun!");
+                alert("Lütfen başlık ve açıklama girin!");
                 return;
             }
 
@@ -94,17 +124,14 @@
             descInput.value = '';
         });
 
-        // Firebase'den Raporları Listeleme
         onValue(reportsRef, (snapshot) => {
             reportContainer.innerHTML = '';
             const data = snapshot.val();
             if (data) {
-                // En yeni rapor üstte görünecek şekilde ters çeviriyoruz
                 const reportsList = Object.values(data).reverse();
                 reportsList.forEach(rep => {
                     const card = document.createElement('div');
                     card.classList.add('report-card');
-
                     card.innerHTML = `
                         <div class="report-header">
                             <span class="report-user">👤 ${rep.sender}</span>
@@ -119,4 +146,5 @@
         });
     </script>
 </body>
-</html>
+    </html>
+    
