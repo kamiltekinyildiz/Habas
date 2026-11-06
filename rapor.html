@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HABAŞ - Rapor & Not Defteri</title>
+    <title>HABAŞ - Raporlar & Notlar</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         body { background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
@@ -12,55 +12,51 @@
         .top-header h2 { font-size: 18px; font-weight: bold; }
         .back-btn { background: rgba(0,0,0,0.1); color: #333; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: bold; }
 
-        .content-area { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .content-area { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
 
-        /* Not Defteri Bölümü */
-        .notepad-section { background: #fffde7; border: 1px solid #ffe082; padding: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .notepad-section h3 { font-size: 15px; color: #f57f17; margin-bottom: 8px; }
-        .notepad-section textarea { width: 100%; height: 90px; padding: 10px; border: 1px solid #ffd54f; border-radius: 6px; font-size: 14px; resize: none; outline: none; background: #fff; }
-        .notepad-btn { background: #fbc02d; color: #fff; border: none; padding: 10px 15px; border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer; margin-top: 8px; width: 100%; }
+        /* Not / Rapor Kartları */
+        .card-item { background: white; padding: 14px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); border-left: 5px solid #fbbc05; position: relative; }
+        .card-item.note-type { border-left-color: #f57f17; background: #fffde7; }
+        
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .card-user { font-size: 13px; font-weight: bold; color: #1a73e8; }
+        .card-time { font-size: 11px; color: #777; }
+        .card-title { font-size: 16px; font-weight: bold; color: #333; margin-bottom: 4px; }
+        .card-desc { font-size: 14px; color: #555; word-break: break-word; }
+        
+        .delete-btn { background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 12px; cursor: pointer; margin-top: 8px; float: right; }
 
-        /* Rapor Kartları */
-        .report-card { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); border-left: 5px solid #fbbc05; }
-        .report-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-        .report-user { font-size: 13px; font-weight: bold; color: #1a73e8; }
-        .report-time { font-size: 11px; color: #777; }
-        .report-title { font-size: 16px; font-weight: bold; color: #333; margin-bottom: 5px; }
-        .report-desc { font-size: 14px; color: #555; word-break: break-word; }
-
-        .report-input-bar { background: white; padding: 12px 15px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); flex-shrink: 0; }
-        .report-input-bar input, .report-input-bar textarea { width: 100%; padding: 10px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; outline: none; }
-        .report-input-bar textarea { resize: none; height: 50px; }
-        .report-input-bar button { background: #fbbc05; color: #333; border: none; border-radius: 6px; padding: 12px; font-size: 15px; font-weight: bold; cursor: pointer; }
+        /* Girdi Çubukları */
+        .input-section { background: white; padding: 12px 15px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); flex-shrink: 0; }
+        .input-section input, .input-section textarea { width: 100%; padding: 10px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; outline: none; }
+        .input-section textarea { resize: none; height: 50px; }
+        .btn-note { background: #f57f17; color: white; border: none; border-radius: 6px; padding: 10px; font-size: 14px; font-weight: bold; cursor: pointer; }
+        .btn-report { background: #fbbc05; color: #333; border: none; border-radius: 6px; padding: 10px; font-size: 14px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div class="top-header">
-        <h2>📋 Raporlar & Not Defteri</h2>
+        <h2>📋 Notlar & Raporlar</h2>
         <a href="index.html" class="back-btn">🏠 Ana Menü</a>
     </div>
 
-    <div class="content-area">
-        <!-- Ortak Not Defteri (İlaç / Araç Eksikleri) -->
-        <div class="notepad-section">
-            <h3>📝 Ortak Not Defteri (İlaç Eksiği & Araç Bakım Notları)</h3>
-            <textarea id="notepad-input" placeholder="Buraya yazıp kaydettiğiniz not herkes tarafından görünür..."></textarea>
-            <button class="notepad-btn" id="save-notepad-btn">Notu Kaydet / Güncelle</button>
-        </div>
-
-        <div id="report-container"></div>
+    <div class="content-area" id="list-container">
+        <!-- Dinamik Liste Buraya Gelecek -->
     </div>
 
-    <div class="report-input-bar">
-        <input type="text" id="report-title-input" placeholder="Bildirim Başlığı (Örn: Ambulans Bakım / İlaç Takip)" autocomplete="off">
-        <textarea id="report-desc-input" placeholder="Detaylar..."></textarea>
-        <button id="submit-report-btn">Raporu Gönder</button>
+    <div class="input-section">
+        <input type="text" id="input-title" placeholder="Başlık (Örn: İlaç Eksiği / Araç Bakım)" autocomplete="off">
+        <textarea id="input-desc" placeholder="Detayları yazın..."></textarea>
+        <div style="display: flex; gap: 8px;">
+            <button class="btn-note" id="add-note-btn" style="flex:1;">📝 Not Ekle</button>
+            <button class="btn-report" id="add-report-btn" style="flex:1;">📋 Rapor Gönder</button>
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, push, remove, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyDrWXMQRR74_B5faBNijiT1zXfYHA-MWtM",
@@ -75,35 +71,15 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Not Defteri Mantığı
-        const notepadInput = document.getElementById('notepad-input');
-        const saveNotepadBtn = document.getElementById('save-notepad-btn');
-        const notepadRef = ref(db, 'habas_notepad');
+        const container = document.getElementById('list-container');
+        const titleInput = document.getElementById('input-title');
+        const descInput = document.getElementById('input-desc');
+        const addNoteBtn = document.getElementById('add-note-btn');
+        const addReportBtn = document.getElementById('add-report-btn');
 
-        saveNotepadBtn.addEventListener('click', () => {
-            set(notepadRef, {
-                text: notepadInput.value,
-                updatedBy: localStorage.getItem('habas_chat_name') || "Personel",
-                time: new Date().toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })
-            });
-            alert("Not defteri güncellendi!");
-        });
+        const dbRef = ref(db, 'habas_notes_reports');
 
-        onValue(notepadRef, (snapshot) => {
-            const data = snapshot.val();
-            if (data && data.text) {
-                notepadInput.value = data.text;
-            }
-        });
-
-        // Raporlar Mantığı
-        const reportContainer = document.getElementById('report-container');
-        const titleInput = document.getElementById('report-title-input');
-        const descInput = document.getElementById('report-desc-input');
-        const submitBtn = document.getElementById('submit-report-btn');
-        const reportsRef = ref(db, 'habas_reports');
-
-        submitBtn.addEventListener('click', () => {
+        function addItem(type) {
             const title = titleInput.value.trim();
             const desc = descInput.value.trim();
             const myName = localStorage.getItem('habas_chat_name') || "Personel";
@@ -113,7 +89,8 @@
                 return;
             }
 
-            push(reportsRef, {
+            push(dbRef, {
+                type: type, // 'note' veya 'report'
                 sender: myName,
                 title: title,
                 desc: desc,
@@ -122,25 +99,38 @@
 
             titleInput.value = '';
             descInput.value = '';
-        });
+        }
 
-        onValue(reportsRef, (snapshot) => {
-            reportContainer.innerHTML = '';
+        addNoteBtn.addEventListener('click', () => addItem('note'));
+        addReportBtn.addEventListener('click', () => addItem('report'));
+
+        window.deleteItem = function(id) {
+            if (confirm("Bu kaydı silmek istediğinize emin misiniz?")) {
+                remove(ref(db, 'habas_notes_reports/' + id));
+            }
+        };
+
+        onValue(dbRef, (snapshot) => {
+            container.innerHTML = '';
             const data = snapshot.val();
             if (data) {
-                const reportsList = Object.values(data).reverse();
-                reportsList.forEach(rep => {
+                const items = Object.entries(data).reverse();
+                items.forEach(([id, item]) => {
                     const card = document.createElement('div');
-                    card.classList.add('report-card');
+                    card.classList.add('card-item');
+                    if (item.type === 'note') card.classList.add('note-type');
+
                     card.innerHTML = `
-                        <div class="report-header">
-                            <span class="report-user">👤 ${rep.sender}</span>
-                            <span class="report-time">${rep.time || ''}</span>
+                        <div class="card-header">
+                            <span class="card-user">👤 ${item.sender} (${item.type === 'note' ? 'Not' : 'Rapor'})</span>
+                            <span class="card-time">${item.time || ''}</span>
                         </div>
-                        <div class="report-title">${rep.title}</div>
-                        <div class="report-desc">${rep.desc}</div>
+                        <div class="card-title">${item.title}</div>
+                        <div class="card-desc">${item.desc}</div>
+                        <button class="delete-btn" onclick="window.deleteItem('${id}')">🗑️ Sil</button>
+                        <div style="clear:both;"></div>
                     `;
-                    reportContainer.appendChild(card);
+                    container.appendChild(card);
                 });
             }
         });
