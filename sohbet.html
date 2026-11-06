@@ -6,62 +6,34 @@
     <title>HABAŞ - Sohbet & Vardiya</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; }
-        
-        .top-header { background: #1a73e8; color: white; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        body { background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        .top-header { background: #1a73e8; color: white; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
         .top-header h2 { font-size: 17px; font-weight: bold; }
-        .header-btns { display: flex; gap: 6px; align-items: center; }
-        .action-btn { background: rgba(255,255,255,0.2); color: white; padding: 5px 10px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold; border: none; cursor: pointer; }
-
+        .back-btn { background: rgba(255,255,255,0.2); color: white; padding: 5px 10px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold; }
         #chat-container { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background-color: #e5ddd5; }
-        
-        .message-card { background: white; padding: 10px 14px; border-radius: 8px; max-width: 85%; box-shadow: 0 1px 2px rgba(0,0,0,0.1); word-break: break-word; align-self: flex-start; position: relative; }
+        .message-card { background: white; padding: 10px 14px; border-radius: 8px; max-width: 85%; box-shadow: 0 1px 2px rgba(0,0,0,0.1); word-break: break-word; align-self: flex-start; }
         .message-card.my-message { background: #dcf8c6; align-self: flex-end; }
-        
         .msg-user { font-size: 12px; font-weight: bold; color: #1a73e8; margin-bottom: 3px; }
+        .msg-info { font-size: 10px; color: #888; margin-bottom: 4px; }
         .msg-text { font-size: 15px; color: #333; margin-bottom: 5px; }
         .msg-img { max-width: 100%; border-radius: 6px; margin-top: 5px; display: block; }
-        .msg-time { font-size: 10px; color: #777; margin-top: 4px; display: inline-block; float: right; }
-        .msg-delete { font-size: 11px; color: #dc3545; background: none; border: none; cursor: pointer; font-weight: bold; margin-right: 10px; }
-
-        .chat-input-bar { background: white; padding: 10px; display: flex; gap: 8px; align-items: center; flex-shrink: 0; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); }
-        .chat-input-bar input[type="text"] { flex-grow: 1; padding: 10px 14px; border: 1px solid #ccc; border-radius: 20px; font-size: 15px; outline: none; background: #fafafa; }
-        
-        .file-upload-btn { background: #e0e0e0; color: #333; border: none; border-radius: 50%; width: 38px; height: 38px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .chat-input-bar button#send-btn { background: #1a73e8; color: white; border: none; border-radius: 50%; width: 38px; height: 38px; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
-        
-        #name-modal { display: flex; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 100; justify-content: center; align-items: center; }
-        .modal-box { background: white; padding: 25px; border-radius: 12px; width: 85%; max-width: 320px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        .modal-box h3 { margin-bottom: 10px; color: #333; }
-        .modal-box p { font-size: 13px; color: #666; margin-bottom: 15px; }
-        .modal-box input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; margin-bottom: 15px; text-align: center; outline: none; }
-        .modal-box button { width: 100%; background: #1a73e8; color: white; padding: 12px; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .msg-time { font-size: 10px; color: #777; margin-top: 4px; float: right; }
+        .msg-delete { font-size: 11px; color: #dc3545; background: none; border: none; cursor: pointer; font-weight: bold; margin-right: 10px; display: none; } /* Varsayılan Gizli */
+        .chat-input-bar { background: white; padding: 10px; display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+        .chat-input-bar input[type="text"] { flex-grow: 1; padding: 10px 14px; border: 1px solid #ccc; border-radius: 20px; font-size: 15px; outline: none; }
+        .file-upload-btn, #send-btn { background: #1a73e8; color: white; border: none; border-radius: 50%; width: 38px; height: 38px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+        .file-upload-btn { background: #e0e0e0; color: #333; }
     </style>
 </head>
 <body>
-
-    <div id="name-modal" style="display: none;">
-        <div class="modal-box">
-            <h3>Kullanıcı Adı</h3>
-            <p>Adınızı veya unvanınızı girin:</p>
-            <input type="text" id="username-input" placeholder="Örn: Kamil (Şoför)" autocomplete="off">
-            <button id="save-name-btn">Kaydet</button>
-        </div>
-    </div>
-
     <div class="top-header">
-        <h2>💬 Vardiya & Sohbet Panosu</h2>
-        <div class="header-btns">
-            <button class="action-btn" id="change-name-btn">👤 Ad Değiş</button>
-            <a href="index.html" class="action-btn">🏠 Ana Menü</a>
-        </div>
+        <h2>💬 Vardiya Panosu</h2>
+        <a href="index.html" class="back-btn">🏠 Ana Menü</a>
     </div>
-
     <div id="chat-container"></div>
-
     <div class="chat-input-bar">
         <input type="file" id="file-input" accept="image/*" style="display: none;">
-        <button class="file-upload-btn" id="attach-btn" title="Görsel Yükle">📷</button>
+        <button class="file-upload-btn" id="attach-btn">📷</button>
         <input type="text" id="message-input" placeholder="Mesaj yazın..." autocomplete="off">
         <button id="send-btn">➤</button>
     </div>
@@ -70,143 +42,87 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, push, remove, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        const firebaseConfig = {
-          apiKey: "AIzaSyDrWXMQRR74_B5faBNijiT1zXfYHA-MWtM",
-          authDomain: "habas-navigasyon.firebaseapp.com",
-          databaseURL: "https://habas-navigasyon-default-rtdb.europe-west1.firebasedatabase.app",
-          projectId: "habas-navigasyon",
-          storageBucket: "habas-navigasyon.firebasestorage.app",
-          messagingSenderId: "1096725065152",
-          appId: "1:1096725065152:web:f30a0e53b7adb2683f2c25"
-        };
-
+        const firebaseConfig = { apiKey: "AIzaSyDrWXMQRR74_B5faBNijiT1zXfYHA-MWtM", authDomain: "habas-navigasyon.firebaseapp.com", databaseURL: "https://habas-navigasyon-default-rtdb.europe-west1.firebasedatabase.app", projectId: "habas-navigasyon", storageBucket: "habas-navigasyon.firebasestorage.app", messagingSenderId: "1096725065152", appId: "1:1096725065152:web:f30a0e53b7adb2683f2c25" };
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-
-        // Bildirim İzni İste
-        if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
-            Notification.requestPermission();
-        }
-
-        let myName = localStorage.getItem('habas_chat_name') || "";
-        const nameModal = document.getElementById('name-modal');
-        const usernameInput = document.getElementById('username-input');
-        const saveNameBtn = document.getElementById('save-name-btn');
-        const changeNameBtn = document.getElementById('change-name-btn');
-
-        if (!myName) nameModal.style.display = 'flex';
-
-        saveNameBtn.addEventListener('click', () => {
-            const name = usernameInput.value.trim();
-            if (name) {
-                myName = name;
-                localStorage.setItem('habas_chat_name', myName);
-                nameModal.style.display = 'none';
-                if ("Notification" in window && Notification.permission === "default") {
-                    Notification.requestPermission();
-                }
-            } else { alert("Lütfen adınızı girin!"); }
-        });
-
-        changeNameBtn.addEventListener('click', () => {
-            usernameInput.value = myName;
-            nameModal.style.display = 'flex';
-        });
+        
+        // Kullanıcı bilgisini al, yoksa Ana Menüye at
+        const savedData = localStorage.getItem('habas_user_data');
+        if(!savedData) { window.location.href = 'index.html'; }
+        const myUser = JSON.parse(savedData);
 
         const chatContainer = document.getElementById('chat-container');
         const messageInput = document.getElementById('message-input');
-        const sendBtn = document.getElementById('send-btn');
-        const fileInput = document.getElementById('file-input');
-        const attachBtn = document.getElementById('attach-btn');
-
-        attachBtn.addEventListener('click', () => fileInput.click());
-
         const chatRef = ref(db, 'habas_chat_room');
+        const auditRef = ref(db, 'habas_audit_logs'); // Yönetici için silinme kayıtları
 
         function sendData(text, imageBase64 = null) {
-            if (!myName) {
-                nameModal.style.display = 'flex';
-                return;
-            }
             push(chatRef, {
-                sender: myName,
+                sender: myUser.name,
+                sicil: myUser.sicil,
+                firma: myUser.firma,
                 text: text,
                 image: imageBase64,
                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             });
         }
 
-        sendBtn.addEventListener('click', () => {
+        document.getElementById('send-btn').addEventListener('click', () => {
             const text = messageInput.value.trim();
-            if (text) {
-                sendData(text);
-                messageInput.value = '';
-            }
+            if (text) { sendData(text); messageInput.value = ''; }
         });
-
-        messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendBtn.click();
-            }
-        });
-
-        // GÖRSEL METNİ DÜZELTİLDİ
-        fileInput.addEventListener('change', (e) => {
+        document.getElementById('attach-btn').addEventListener('click', () => document.getElementById('file-input').click());
+        document.getElementById('file-input').addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(uploadEvent) {
-                    sendData("📷 Görsel:", uploadEvent.target.result);
-                };
+                reader.onload = (ev) => sendData("📷 Görsel:", ev.target.result);
                 reader.readAsDataURL(file);
             }
         });
 
-        window.deleteMessage = function(id) {
+        // Silme İşlemi (Önce log atar, sonra siler)
+        window.deleteMessage = function(id, msgText, msgSender) {
             if (confirm("Bu mesajı silmek istiyor musunuz?")) {
-                remove(ref(db, 'habas_chat_room/' + id));
+                // Yöneticiye Log Düş
+                push(auditRef, {
+                    actionBy: myUser.name,
+                    actionSicil: myUser.sicil,
+                    deletedMsg: msgText,
+                    originalSender: msgSender,
+                    time: new Date().toLocaleString()
+                }).then(() => {
+                    remove(ref(db, 'habas_chat_room/' + id));
+                });
             }
         };
-
-        let isFirstLoad = true;
-        let lastMessageCount = 0;
 
         onValue(chatRef, (snapshot) => {
             chatContainer.innerHTML = '';
             const data = snapshot.val();
             if (data) {
-                const messages = Object.entries(data);
-                
-                messages.forEach(([id, msg]) => {
+                Object.entries(data).forEach(([id, msg]) => {
                     const card = document.createElement('div');
                     card.classList.add('message-card');
-                    if (msg.sender === myName) card.classList.add('my-message');
+                    if (msg.sicil === myUser.sicil) card.classList.add('my-message');
 
                     let contentHtml = `<div class="msg-user">${msg.sender}</div>`;
+                    contentHtml += `<div class="msg-info">Firma: ${msg.firma || '-'} | Sicil: ${msg.sicil || '-'}</div>`;
                     if (msg.text) contentHtml += `<div class="msg-text">${msg.text}</div>`;
                     if (msg.image) contentHtml += `<img src="${msg.image}" class="msg-img">`;
                     
-                    contentHtml += `<div><button class="msg-delete" onclick="window.deleteMessage('${id}')">Sil</button><span class="msg-time">${msg.time || ''}</span></div>`;
+                    // SADECE KENDİ MESAJIYSA VEYA YÖNETİCİYSE (Sicil 1000) SİL BUTONU GÖSTER
+                    let deleteBtnHtml = "";
+                    if(msg.sicil === myUser.sicil || myUser.sicil === "1000") {
+                        deleteBtnHtml = `<button class="msg-delete" style="display:inline-block;" onclick="window.deleteMessage('${id}', '${msg.text}', '${msg.sender}')">Sil</button>`;
+                    }
 
+                    contentHtml += `<div>${deleteBtnHtml}<span class="msg-time">${msg.time || ''}</span></div>`;
                     card.innerHTML = contentHtml;
                     chatContainer.appendChild(card);
                 });
-                
                 chatContainer.scrollTop = chatContainer.scrollHeight;
-
-                // YENİ MESAJ BİLDİRİMİ (Sadece senden başkası yazarsa)
-                if (!isFirstLoad && messages.length > lastMessageCount) {
-                    const lastMsg = messages[messages.length - 1][1];
-                    if (lastMsg.sender !== myName && "Notification" in window && Notification.permission === "granted") {
-                        new Notification("Vardiya Panosu: " + lastMsg.sender, {
-                            body: lastMsg.text === "📷 Görsel:" ? "Bir görsel gönderdi" : lastMsg.text,
-                            icon: "https://cdn-icons-png.flaticon.com/512/134/134937.png" 
-                        });
-                    }
-                }
-                lastMessageCount = messages.length;
             }
-            isFirstLoad = false;
         });
     </script>
 </body>
