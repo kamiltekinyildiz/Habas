@@ -37,9 +37,9 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Sadece Yönetici Girebilir
+        // Sadece Yönetici (Sicil: 253525) Girebilir
         const savedData = localStorage.getItem('habas_user_data');
-        if(!savedData || JSON.parse(savedData).sicil !== "1000") {
+        if(!savedData || JSON.parse(savedData).sicil !== "253525") {
             window.location.href = 'index.html';
         }
 
@@ -50,14 +50,14 @@
             logContainer.innerHTML = '';
             const data = snapshot.val();
             if (data) {
-                const logs = Object.entries(data).reverse(); // En yeni en üstte
+                const logs = Object.entries(data).reverse();
                 logs.forEach(([id, log]) => {
                     const card = document.createElement('div');
                     card.classList.add('log-card');
                     card.innerHTML = `
                         <div class="log-time">${log.time}</div>
                         <div class="log-user">🗑️ Silen: ${log.actionBy} (Sicil: ${log.actionSicil})</div>
-                        <div class="log-detail"><b>Silinen Mesaj Sahibi:</b> ${log.originalSender}</div>
+                        <div class="log-detail"><b>Silinen Mesaj Sahiop:</b> ${log.originalSender}</div>
                         <div class="log-detail"><b>Silinen İçerik:</b> <span>"${log.deletedMsg}"</span></div>
                     `;
                     logContainer.appendChild(card);
