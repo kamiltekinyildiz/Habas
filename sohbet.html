@@ -61,7 +61,7 @@
 
     <div class="chat-input-bar">
         <input type="file" id="file-input" accept="image/*" style="display: none;">
-        <button class="file-upload-btn" id="attach-btn" title="Görsel / Yemek Listesi Yükle">📷</button>
+        <button class="file-upload-btn" id="attach-btn" title="Görsel Yükle">📷</button>
         <input type="text" id="message-input" placeholder="Mesaj yazın..." autocomplete="off">
         <button id="send-btn">➤</button>
     </div>
@@ -83,6 +83,11 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
+        // Bildirim İzni İste
+        if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
+            Notification.requestPermission();
+        }
+
         let myName = localStorage.getItem('habas_chat_name') || "";
         const nameModal = document.getElementById('name-modal');
         const usernameInput = document.getElementById('username-input');
@@ -97,6 +102,9 @@
                 myName = name;
                 localStorage.setItem('habas_chat_name', myName);
                 nameModal.style.display = 'none';
+                if ("Notification" in window && Notification.permission === "default") {
+                    Notification.requestPermission();
+                }
             } else { alert("Lütfen adınızı girin!"); }
         });
 
@@ -142,12 +150,13 @@
             }
         });
 
+        // GÖRSEL METNİ DÜZELTİLDİ
         fileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(uploadEvent) {
-                    sendData("📷 Yemek Listesi / Görsel:", uploadEvent.target.result);
+                    sendData("📷 Görsel:", uploadEvent.target.result);
                 };
                 reader.readAsDataURL(file);
             }
@@ -159,11 +168,16 @@
             }
         };
 
+        let isFirstLoad = true;
+        let lastMessageCount = 0;
+
         onValue(chatRef, (snapshot) => {
             chatContainer.innerHTML = '';
             const data = snapshot.val();
             if (data) {
-                Object.entries(data).forEach(([id, msg]) => {
+                const messages = Object.entries(data);
+                
+                messages.forEach(([id, msg]) => {
                     const card = document.createElement('div');
                     card.classList.add('message-card');
                     if (msg.sender === myName) card.classList.add('my-message');
@@ -177,8 +191,22 @@
                     card.innerHTML = contentHtml;
                     chatContainer.appendChild(card);
                 });
+                
                 chatContainer.scrollTop = chatContainer.scrollHeight;
+
+                // YENİ MESAJ BİLDİRİMİ (Sadece senden başkası yazarsa)
+                if (!isFirstLoad && messages.length > lastMessageCount) {
+                    const lastMsg = messages[messages.length - 1][1];
+                    if (lastMsg.sender !== myName && "Notification" in window && Notification.permission === "granted") {
+                        new Notification("Vardiya Panosu: " + lastMsg.sender, {
+                            body: lastMsg.text === "📷 Görsel:" ? "Bir görsel gönderdi" : lastMsg.text,
+                            icon: "https://cdn-icons-png.flaticon.com/512/134/134937.png" 
+                        });
+                    }
+                }
+                lastMessageCount = messages.length;
             }
+            isFirstLoad = false;
         });
     </script>
 </body>
