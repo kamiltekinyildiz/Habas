@@ -3,26 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HABAŞ - Sohbet & Vardiya Panosu</title>
+    <title>HABAŞ - Sohbet & Vardiya</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         body { background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; }
         
-        .top-header { background: #1a73e8; color: white; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.1); flex-shrink: 0; }
+        .top-header { background: #1a73e8; color: white; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
         .top-header h2 { font-size: 17px; font-weight: bold; }
         .back-btn { background: rgba(255,255,255,0.2); color: white; padding: 5px 10px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold; }
 
         #chat-container { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background-color: #e5ddd5; }
         
-        .message-card { background: white; padding: 10px 14px; border-radius: 8px; max-width: 85%; box-shadow: 0 1px 2px rgba(0,0,0,0.1); word-break: break-word; align-self: flex-start; }
+        .message-card { background: white; padding: 10px 14px; border-radius: 8px; max-width: 85%; box-shadow: 0 1px 2px rgba(0,0,0,0.1); word-break: break-word; align-self: flex-start; position: relative; }
         .message-card.my-message { background: #dcf8c6; align-self: flex-end; }
         
         .msg-user { font-size: 12px; font-weight: bold; color: #1a73e8; margin-bottom: 3px; }
         .msg-text { font-size: 15px; color: #333; margin-bottom: 5px; }
         .msg-img { max-width: 100%; border-radius: 6px; margin-top: 5px; display: block; }
-        .msg-time { font-size: 10px; color: #777; text-align: right; margin-top: 4px; }
+        .msg-time { font-size: 10px; color: #777; text-align: right; margin-top: 4px; display: inline-block; float: right; }
+        .msg-delete { font-size: 11px; color: #dc3545; background: none; border: none; cursor: pointer; margin-right: 10px; }
 
-        .chat-input-bar { background: white; padding: 10px; display: flex; gap: 8px; align-items: center; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); flex-shrink: 0; }
+        .chat-input-bar { background: white; padding: 10px; display: flex; gap: 8px; align-items: center; flex-shrink: 0; box-shadow: 0 -2px 5px rgba(0,0,0,0.05); }
         .chat-input-bar input[type="text"] { flex-grow: 1; padding: 10px 14px; border: 1px solid #ccc; border-radius: 20px; font-size: 15px; outline: none; background: #fafafa; }
         
         .file-upload-btn { background: #e0e0e0; color: #333; border: none; border-radius: 50%; width: 38px; height: 38px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -63,7 +64,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, push, remove, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyDrWXMQRR74_B5faBNijiT1zXfYHA-MWtM",
@@ -102,7 +103,7 @@
 
         attachBtn.addEventListener('click', () => fileInput.click());
 
-        const chatRef = ref(db, 'habas_chat');
+        const chatRef = ref(db, 'habas_chat_room');
 
         function sendData(text, imageBase64 = null) {
             if (!myName) {
@@ -136,17 +137,23 @@
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(uploadEvent) {
-                    sendData("📷 Görsel / Yemek Listesi:", uploadEvent.target.result);
+                    sendData("📷 Yemek Listesi / Görsel:", uploadEvent.target.result);
                 };
                 reader.readAsDataURL(file);
             }
         });
 
+        window.deleteMessage = function(id) {
+            if (confirm("Bu mesajı silmek istiyor musunuz?")) {
+                remove(ref(db, 'habas_chat_room/' + id));
+            }
+        };
+
         onValue(chatRef, (snapshot) => {
             chatContainer.innerHTML = '';
             const data = snapshot.val();
             if (data) {
-                Object.values(data).forEach(msg => {
+                Object.entries(data).forEach(([id, msg]) => {
                     const card = document.createElement('div');
                     card.classList.add('message-card');
                     if (msg.sender === myName) card.classList.add('my-message');
@@ -154,7 +161,8 @@
                     let contentHtml = `<div class="msg-user">${msg.sender}</div>`;
                     if (msg.text) contentHtml += `<div class="msg-text">${msg.text}</div>`;
                     if (msg.image) contentHtml += `<img src="${msg.image}" class="msg-img">`;
-                    contentHtml += `<div class="msg-time">${msg.time || ''}</div>`;
+                    
+                    contentHtml += `<div><button class="msg-delete" onclick="window.deleteMessage('${id}')">Sil</button><span class="msg-time">${msg.time || ''}</span></div>`;
 
                     card.innerHTML = contentHtml;
                     chatContainer.appendChild(card);
