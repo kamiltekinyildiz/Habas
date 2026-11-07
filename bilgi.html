@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HABAŞ - Bilgiler & Formlar</title>
+    <title>HABAŞ - Bilgiler</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         body { background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; }
@@ -12,7 +12,6 @@
         .top-header h2 { font-size: 17px; font-weight: bold; }
         .back-btn { background: rgba(255,255,255,0.2); color: white; padding: 5px 10px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold; cursor: pointer; border: none; }
 
-        /* Ana Menü Butonları */
         #menu-view { padding: 20px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; flex-grow: 1; }
         .menu-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 15px; cursor: pointer; border-left: 6px solid #ea4335; text-decoration: none; color: #333; transition: transform 0.1s; }
         .menu-card:active { transform: scale(0.98); }
@@ -24,35 +23,18 @@
 <body>
 
     <div class="top-header">
-        <h2>ℹ️ Bilgiler ve Formlar</h2>
-        <button class="back-btn" onclick="window.location.href='index.html'">🏠 Ana Menü</button>
+        <h2>ℹ️ Bilgiler</h2>
+        <a href="index.html" class="back-btn">🏠 Ana Menü</a>
     </div>
 
-    <!-- ANA MENÜ EKRANI -->
     <div id="menu-view">
-        <div class="menu-card" onclick="window.location.href='rehber.html'">
+        <a href="rehber.html" class="menu-card">
             <div class="menu-icon">📞</div>
             <div>
                 <div class="menu-title">Dahili Telefon Rehberi</div>
                 <div class="menu-desc">Fabrika içi birimlere ve kişilere hızlı arama yapın</div>
             </div>
-        </div>
-
-        <div class="menu-card" onclick="window.open('https://docs.google.com/spreadsheets/d/1cEiAwzFpLArZLB1SBWajViZMDpmL_ltz/edit?usp=drivesdk', '_blank')">
-            <div class="menu-icon">☀️</div>
-            <div>
-                <div class="menu-title">Ambulans Denetleme (Gündüz)</div>
-                <div class="menu-desc">Orijinal Excel formatında gündüz kontrol formu</div>
-            </div>
-        </div>
-
-        <div class="menu-card" onclick="window.open('https://docs.google.com/spreadsheets/d/1HWc2CYPl7QuDto0pJpqi34TdTO7cxp3L/edit?usp=drivesdk', '_blank')">
-            <div class="menu-icon">⏱️</div>
-            <div>
-                <div class="menu-title">Ambulans Denetleme (24 Saat)</div>
-                <div class="menu-desc">Orijinal Excel formatında 24 saat kontrol formu</div>
-            </div>
-        </div>
+        </a>
     </div>
 
 </body>
