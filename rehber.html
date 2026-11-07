@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HABAŞ - Dahili Telefon Rehberi</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; }
+        
+        .top-header { background: #ea4335; color: white; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .top-header h2 { font-size: 17px; font-weight: bold; }
+        .back-btn { background: rgba(255,255,255,0.2); color: white; padding: 5px 10px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold; border: none; cursor: pointer; }
+
+        .search-bar { padding: 12px 15px; background: white; flex-shrink: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .search-bar input { width: 100%; padding: 10px 14px; border: 1px solid #ccc; border-radius: 20px; font-size: 15px; outline: none; background: #fafafa; }
+
+        .directory-container { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        
+        .contact-card { background: white; padding: 12px 15px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border-left: 4px solid #ea4335; }
+        .contact-info { display: flex; flex-direction: column; gap: 2px; }
+        .contact-name { font-size: 15px; font-weight: bold; color: #333; }
+        .contact-dept { font-size: 13px; color: #666; }
+        .contact-ext { font-size: 13px; font-weight: bold; color: #1a73e8; }
+        
+        .call-btn { background: #34a853; color: white; padding: 8px 14px; border-radius: 20px; text-decoration: none; font-size: 13px; font-weight: bold; display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+    </style>
+</head>
+<body>
+
+    <div class="top-header">
+        <h2>📞 Dahili Telefon Rehberi</h2>
+        <a href="bilgi.html" class="back-btn">⬅ Geri Dön</a>
+    </div>
+
+    <div class="search-bar">
+        <input type="text" id="search-input" placeholder="İsim, birim veya dahili numara ara..." onkeyup="filterContacts()">
+    </div>
+
+    <div class="directory-container" id="contact-list">
+        <div class="contact-card" data-search="fabrika revir ana revir sağlık kliniği 1333">
+            <div class="contact-info">
+                <span class="contact-name">Fabrika REVİR (Ana Revir)</span>
+                <span class="contact-dept">Sağlık Kliniği</span>
+                <span class="contact-ext">Dahili: 1333</span>
+            </div>
+            <a href="tel:1333" class="call-btn">📞 Ara</a>
+        </div>
+
+        <div class="contact-card" data-search="saç revir sağlık kliniği 1134">
+            <div class="contact-info">
+                <span class="contact-name">Saç REVİR</span>
+                <span class="contact-dept">Sağlık Kliniği</span>
+                <span class="contact-ext">Dahili: 1134</span>
+            </div>
+            <a href="tel:1134" class="call-btn">📞 Ara</a>
+        </div>
+
+        <div class="contact-card" data-search="liman revir sağlık kliniği 1707">
+            <div class="contact-info">
+                <span class="contact-name">Liman REVİR</span>
+                <span class="contact-dept">Sağlık Kliniği</span>
+                <span class="contact-ext">Dahili: 1707</span>
+            </div>
+            <a href="tel:1707" class="call-btn">📞 Ara</a>
+        </div>
+
+        <div class="contact-card" data-search="dr berkant adalı işyeri hekimi 1130">
+            <div class="contact-info">
+                <span class="contact-name">Dr. Berkant Adalı</span>
+                <span class="contact-dept">İşyeri Hekimi</span>
+                <span class="contact-ext">Dahili: 1130</span>
+            </div>
+            <a href="tel:1130" class="call-btn">📞 Ara</a>
+        </div>
+
+        <div class="contact-card" data-search="dr şakir karincaoğlu dr zahit porsuk işyeri hekimi 1131">
+            <div class="contact-info">
+                <span class="contact-name">Dr. Şakir Karıncaoğlu - Dr. Zahit Porsuk</span>
+                <span class="contact-dept">İşyeri Hekimi</span>
+                <span class="contact-ext">Dahili: 1131</span>
+            </div>
+            <a href="tel:1131" class="call-btn">📞 Ara</a>
+        </div>
+
+        <div class="contact-card" data-search="güvenlik müdürü bülent kurtarıcı güvenlik 1660">
+            <div class="contact-info">
+                <span class="contact-name">Güvenlik Müdürü (Bülent Kurtarıcı)</span>
+                <span class="contact-dept">Güvenlik</span>
+                <span class="contact-ext">Dahili: 1660</span>
+            </div>
+            <a href="tel:1660" class="call-btn">📞 Ara</a>
+        </div>
+
+        <div class="contact-card" data-search="fabrika ön kapı güvenlik güvenlik 1662">
+            <div class="contact-info">
+                <span class="contact-name">Fabrika Ön Kapı Güvenlik</span>
+                <span class="contact-dept">Güvenlik</span>
+                <span class="contact-ext">Dahili: 1662</span>
+            </div>
+            <a href="tel:1662" class="call-btn">📞 Ara</a>
+        </div>
+    </div>
+
+    <script>
+        function filterContacts() {
+            const input = document.getElementById('search-input').value.toLowerCase();
+            const cards = document.querySelectorAll('.contact-card');
+
+            cards.forEach(card => {
+                const text = card.getAttribute('data-search').toLowerCase();
+                if (text.includes(input)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
